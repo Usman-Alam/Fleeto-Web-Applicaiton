@@ -16,7 +16,7 @@ export default function SiteButton({
     type = "button",
 }: ButtonProps) {
     const baseStyles =
-        "flex flex-row justify-center items-center px-[16px] py-[10px] w-auto h-auto rounded-[8px] font-medium border border-[var(--accent)]";
+        "flex flex-row justify-center items-center p-[8px_12px] lg:p-[10px_16px] w-auto h-auto rounded-[8px] font-medium text-[20px] border border-[var(--accent)]";
 
     const variantStyles = {
         filled: "bg-[var(--accent)] text-[var(--white)]",

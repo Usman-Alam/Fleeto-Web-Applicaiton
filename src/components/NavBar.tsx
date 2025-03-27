@@ -32,7 +32,7 @@ export default function Navbar() {
     }, [isOpen]);
 
     return (
-        <nav className="fixed top-0 left-0 w-screen h-[100px] lg:h-[120px] z-[100] flex flex-row justify-center items-center py-[10px]">
+        <nav className="fixed top-0 left-0 w-[100%] h-[100px] lg:h-[120px] z-[100] flex flex-row justify-center items-center py-[10px]">
             <div
                 className="flex flex-row justify-between items-center w-full md:w-[calc(var(--section-width)+60px)] h-auto md:max-w-[calc(var(--section-max-width)+60px)] px-[5%] md:px-[30px] py-[20px] bg-[var(--white)] rounded-full"
                 style={{ boxShadow: "0px 1px 10px var(--shadow)", }}
@@ -45,7 +45,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="flex flex-col justify-center items-start gap-[2px] text-[var(--body)]"
+                                className="flex flex-col justify-center items-start gap-[2px] text-[var(--body)] text-[20px]"
                             >
                                 {link.name}
                                 <div className="h-[2px] w-0 bg-[var(--accent)]"></div>
@@ -89,7 +89,7 @@ export default function Navbar() {
                                 key={link.href}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className="text-[var(--body)]"
+                                className="text-[var(--body)] text-[20px]"
                             >
                                 {link.name}
                             </Link>

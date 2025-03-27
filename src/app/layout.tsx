@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className={`${inter.className} pt-[120px] lg:pt-[160px] pb-[80px]`}>
-        <div className="flex flex-col items-center justify-center w-full h-full max-w-[1440px] overflow-x-clip">
+      <body className={`${inter.className} flex flex-col items-top justify-center pb-[80px]`}>
+        <div className="flex flex-col items-center justify-center w-[100%] h-full max-w-[1440px] overflow-x-clip">
           <Navbar />
           {children}
         </div>
