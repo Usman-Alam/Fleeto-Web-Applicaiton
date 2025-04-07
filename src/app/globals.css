@@ -66,6 +66,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--white);
   font-family: var(--font-sans), sans-serif;
@@ -97,6 +101,18 @@ h2 {
 
 h3 {
   font-size: 36px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h5 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h6 {
+  font-size: 22px;
   font-weight: 700;
   color: var(--heading);
 }
