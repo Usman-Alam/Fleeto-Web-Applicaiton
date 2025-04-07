@@ -7,12 +7,35 @@ import Logo from "./Logo";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isHidden, setIsHidden] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const lastScrollY = useRef(0);
 
+    // add navlinks here
     const navLinks = [
         { name: "Shops", href: "#shops" },
         { name: "FAQs", href: "#faqs" }
     ];
+
+    // Handle scroll behavior
+    useEffect(() => {
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY.current) {
+                // Scrolling down → Hide navbar
+                setIsHidden(true);
+            } else {
+                // Scrolling up → Show navbar
+                setIsHidden(false);
+            }
+
+            lastScrollY.current = currentScrollY;
+        }
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -31,8 +54,22 @@ export default function Navbar() {
         };
     }, [isOpen]);
 
+    // Disable body scroll when menu is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.height = "100%";
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.height = "";
+            document.body.style.overflow = "";
+        }
+    }, [isOpen]);
+
     return (
-        <nav className="fixed top-0 left-0 w-[100%] h-[100px] lg:h-[120px] z-[100] flex flex-row justify-center items-center py-[10px]">
+        <nav
+            className={`fixed top-0 left-0 w-full z-[100] flex flex-row justify-center items-center py-[10px] transition-transform duration-300 ease-out 
+                ${isHidden ? "-translate-y-full" : "translate-y-0"}`}
+        >
             <div
                 className="flex flex-row justify-between items-center w-full md:w-[calc(var(--section-width)+60px)] h-auto md:max-w-[calc(var(--section-max-width)+60px)] px-[5%] md:px-[30px] py-[20px] bg-[var(--white)] rounded-full"
                 style={{ boxShadow: "0px 1px 10px var(--shadow)", }}

@@ -22,7 +22,7 @@ export default function Login() {
       title="Login Form"
       fields={[
         { label: "Email Address", type: "email", name: "email", placeholder: "muhammad@gmail.com", value: formData.email, onChange: handleChange, required: true },
-        { label: "Password", type: "password", name: "password", placeholder: "1234abcd", value: formData.password, onChange: handleChange, required: true },
+        { label: "Password", type: "password", name: "password", placeholder: "Hello123!", value: formData.password, onChange: handleChange, required: true },
       ]}
       buttonText="Log in"
       onSubmit={handleSubmit}
