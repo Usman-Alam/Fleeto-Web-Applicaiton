@@ -1,7 +1,8 @@
-import { connectDB } from "@/lib/dbConnection";
+// import { connectDB } from "@/server/server.ts";
 import User from "@models/user";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import connectDB from "../../../../../server/server";
 
 export async function POST(req: Request) {
   try {
@@ -36,7 +37,8 @@ export async function POST(req: Request) {
       address,
       password: hashedPassword,
     });
-    await newUser.save();
+    // await newUser.save();
+    await User.create({firstname, lastname, email, phone, address, password})
 
     return NextResponse.json(
       { message: "User registered successfully" },
@@ -47,3 +49,6 @@ export async function POST(req: Request) {
   }
   return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 }
+
+
+
