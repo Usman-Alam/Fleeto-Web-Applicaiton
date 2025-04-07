@@ -202,9 +202,11 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-top w-full">
       <HomeHero />
+      <div id="shops"></div>
       <ShopsSection icon="/restaurant.svg" heading="Restaurants" data={restaurantData} />
       <ShopsSection icon="/medicine.svg" heading="Medicine" data={medicineData} />
       <ShopsSection icon="/grocery.svg" heading="Grocery" data={groceryData} />
+      <div id="faqs"></div>
     </div>
   );
 }

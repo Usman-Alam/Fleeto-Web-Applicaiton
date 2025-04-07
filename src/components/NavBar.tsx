@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import SiteButton from "./SiteButton";
 import Logo from "./Logo";
 
@@ -10,23 +10,46 @@ export default function Navbar() {
     const [isHidden, setIsHidden] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const lastScrollY = useRef(0);
+    const router = useRouter();
+    const pathname = usePathname();
+    const sectionToScroll = useRef<string | null>(null);
 
-    // add navlinks here
+    const scrollToSection = (id: string) => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const handleNavigation = (href: string) => {
+        const sectionId = href.substring(1);
+        if (pathname === "/") {
+            scrollToSection(sectionId);
+        } else {
+            sectionToScroll.current = sectionId;
+            (async () => {
+                await router.push("/");
+                scrollToSection(sectionId);
+            })();
+        }
+    };
+
+    useEffect(() => {
+        if (sectionToScroll.current) {
+            scrollToSection(sectionToScroll.current);
+            sectionToScroll.current = null;
+        }
+    }, [pathname]);
+
     const navLinks = [
-        { name: "Shops", href: "#shops" },
-        { name: "FAQs", href: "#faqs" }
+        { name: "Shops", href: "#shops", onClick: () => handleNavigation("#shops") },
+        { name: "FAQs", href: "#faqs", onClick: () => handleNavigation("#faqs") },
     ];
 
-    // Handle scroll behavior
     useEffect(() => {
         function handleScroll() {
             const currentScrollY = window.scrollY;
 
             if (currentScrollY > lastScrollY.current) {
-                // Scrolling down → Hide navbar
                 setIsHidden(true);
             } else {
-                // Scrolling up → Show navbar
                 setIsHidden(false);
             }
 
@@ -37,7 +60,6 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Close menu when clicking outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -54,7 +76,6 @@ export default function Navbar() {
         };
     }, [isOpen]);
 
-    // Disable body scroll when menu is open
     useEffect(() => {
         if (isOpen) {
             document.body.style.height = "100%";
@@ -72,21 +93,20 @@ export default function Navbar() {
         >
             <div
                 className="flex flex-row justify-between items-center w-full md:w-[calc(var(--section-width)+60px)] h-auto md:max-w-[calc(var(--section-max-width)+60px)] px-[5%] md:px-[30px] py-[20px] bg-[var(--white)] rounded-full"
-                style={{ boxShadow: "0px 1px 10px var(--shadow)", }}
+                style={{ boxShadow: "0px 1px 10px var(--shadow)" }}
             >
                 <Logo />
-                {/* Desktop Menu */}
                 <div className="hidden lg:flex flex-row items-center gap-[60px]">
                     <div className="flex flex-row items-center gap-[20px]">
                         {navLinks.map((link) => (
-                            <Link
+                            <button
                                 key={link.href}
-                                href={link.href}
+                                onClick={link.onClick}
                                 className="flex flex-col justify-center items-start gap-[2px] text-[var(--body)] text-[20px]"
                             >
                                 {link.name}
                                 <div className="h-[2px] w-0 bg-[var(--accent)]"></div>
-                            </Link>
+                            </button>
                         ))}
                     </div>
                     <div className="flex flex-row items-center gap-[10px]">
@@ -94,8 +114,6 @@ export default function Navbar() {
                         <SiteButton text="Signup" variant="filled" href="/signup" />
                     </div>
                 </div>
-
-                {/* Mobile Menu Button */}
                 <button
                     className="lg:hidden focus:outline-none w-[40px] h-[40px]"
                     onClick={() => setIsOpen(true)}
@@ -103,8 +121,6 @@ export default function Navbar() {
                     ☰
                 </button>
             </div>
-
-            {/* Mobile Menu */}
             {isOpen && (
                 <div
                     ref={menuRef}
@@ -122,19 +138,21 @@ export default function Navbar() {
                     </div>
                     <div className="flex flex-col items-stretch gap-[20px] pt-[60px]">
                         {navLinks.map((link) => (
-                            <Link
+                            <button
                                 key={link.href}
-                                href={link.href}
-                                onClick={() => setIsOpen(false)}
-                                className="text-[var(--body)] text-[20px]"
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    link.onClick?.();
+                                }}
+                                className="text-[var(--body)] text-[20px] text-left"
                             >
                                 {link.name}
-                            </Link>
+                            </button>
                         ))}
                     </div>
                     <div className="flex flex-col items-stretch gap-[20px] mt-auto">
-                        <SiteButton text="Login" variant="outlined" href="/login" onClick={() => setIsOpen(false)} />
-                        <SiteButton text="Signup" variant="filled" href="/signup" onClick={() => setIsOpen(false)} />
+                        <SiteButton text="Login" variant="outlined" href="/login" onClick={() => { setIsOpen(false) }} />
+                        <SiteButton text="Signup" variant="filled" href="/signup" onClick={() => { setIsOpen(false) }} />
                     </div>
                 </div>
             )}

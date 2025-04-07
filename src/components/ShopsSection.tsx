@@ -45,8 +45,7 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
                     {heading}
                 </h2>
             </div>
-
-            <div className="flex flex-col items-center w-full gap-[20px]">
+            <div className="flex flex-col items-center w-full gap-[32px]">
                 <div className="grid grid-cols-3 w-full gap-[40px]">
                     {data.slice(0, visibleItems).map((item) => (
                         <div
