@@ -29,16 +29,16 @@ export async function POST(req: Request) {
     // ---------------
     // Create new user
     // ---------------
-    const newUser = new User({
-      firstname,
-      lastname,
-      email,
-      phone,
-      address,
-      password: hashedPassword,
-    });
+    // const newUser = new User({
+    //   firstname,
+    //   lastname,
+    //   email,
+    //   phone,
+    //   address,
+    //   password: hashedPassword,
+    // });
     // await newUser.save();
-    await User.create({firstname, lastname, email, phone, address, password})
+    await User.create({firstname, lastname, email, phone, address, password: hashedPassword})
 
     return NextResponse.json(
       { message: "User registered successfully" },
