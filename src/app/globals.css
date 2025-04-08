@@ -1,0 +1,158 @@
+/*
+  Desktop:  1024px - 1440px
+  Tablet:    768px - 1023px
+  Mobile:    360px - 767px
+*/
+
+@import "tailwindcss";
+
+:root {
+  --white: #F9FAFB;
+  --black: #0F0F0F;
+  --bg2: rgb(238, 66, 102, 0.1);
+  --accent: #EE4266;
+  --primary: #04A777;
+  --secondary: #820263;
+  --tertiary: #D90368;
+  --heading: #1F2937;
+  --body: #333333;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --error: #EF4444;
+  --warning: #FACC15;
+  --success: #22C55E;
+  --info: #2563EB;
+  --disabled: #9CA3AF;
+
+  --font-sans: var(--font-inter);
+
+  --section-width: 87%;
+  --section-max-width: 1252px;
+  --section-top-padding: 120px;
+  --page-top-padding: 160px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --white: #F9FAFB;
+    --black: #0F0F0F;
+  }
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--white);
+  font-family: var(--font-sans), sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+h1 {
+  font-size: 54px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h2 {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h3 {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h5 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+h6 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --section-top-padding: 100px;
+    --page-top-padding: 120px;
+  }
+
+  body {
+    font-size: 18px;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  h2 {
+    font-size: 36px;
+  }
+
+  h3 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --section-width: 90%;
+    --section-top-padding: 64px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-size: 28px;
+  }
+}
