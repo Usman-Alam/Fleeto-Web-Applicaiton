@@ -170,7 +170,8 @@ export default function Signup() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+        // Get the error message from the API response
+        throw new Error(data.error || `Error: ${response.status}`);
       }
 
       // Success - redirect to login page

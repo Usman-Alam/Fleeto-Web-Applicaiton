@@ -5,25 +5,16 @@ import { usePathname, useRouter } from "next/navigation";
 import SiteButton from "./SiteButton";
 import Logo from "./Logo";
 import Image from "next/image";
-import { useCart, CartItem } from "@contexts/CartContext"; // Import from context
+import { useCart } from "@contexts/CartContext";
+import { useAuth } from "@contexts/AuthContext";
 
-interface User {
-    imageSrc: string;
-    name: string;
-    email: string;
-}
-
-interface NavbarProps {
-    user?: User | null;
-}
-
-export default function Navbar({ user }: NavbarProps) {
+export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [isHidden, setIsHidden] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
-    // Get cart state from context instead of local state
+    const { user, isAuthenticated, logout } = useAuth();
     const { cartItems, updateQuantity } = useCart();
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -95,7 +86,6 @@ export default function Navbar({ user }: NavbarProps) {
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            // Check if we clicked outside the menu
             if (
                 menuRef.current &&
                 !menuRef.current.contains(event.target as Node) &&
@@ -104,7 +94,6 @@ export default function Navbar({ user }: NavbarProps) {
                 setIsOpen(false);
             }
 
-            // Check if we clicked outside the profile
             if (
                 profileRef.current &&
                 !profileRef.current.contains(event.target as Node) &&
@@ -112,12 +101,6 @@ export default function Navbar({ user }: NavbarProps) {
             ) {
                 setIsProfileOpen(false);
             }
-
-            // Removed cart click outside handler to keep cart open
-            // If you only want to close cart manually via buttons
-            
-            // FOR DEBUGGING - remove these lines when fixed
-            // If you need to close cart through other means, add specific close buttons
         }
 
         document.addEventListener("mousedown", handleClickOutside);
@@ -128,15 +111,12 @@ export default function Navbar({ user }: NavbarProps) {
         document.body.style.overflow = isOpen ? "hidden" : "";
     }, [isOpen]);
 
-    // Add this useEffect near your other effect hooks
     useEffect(() => {
-        // When cartItems change, make the navbar visible
         if (cartItemCount > 0) {
             setIsHidden(false);
         }
-    }, [cartItems, cartItemCount]); // Dependencies: cartItems and cartItemCount
+    }, [cartItems, cartItemCount]);
 
-    // Update quantity handler from the context
     const handleUpdateQuantity = (id: string, newQuantity: number, e?: React.MouseEvent) => {
         e?.preventDefault();
         e?.stopPropagation();
@@ -173,8 +153,7 @@ export default function Navbar({ user }: NavbarProps) {
                     </div>
 
                     <div className="flex flex-row items-center gap-[15px]">
-                        {/* Only show cart when user is logged in */}
-                        {user && (
+                        {isAuthenticated && (
                             <div className="relative" ref={cartRef}>
                                 <button
                                     className="p-1 rounded-full"
@@ -258,10 +237,8 @@ export default function Navbar({ user }: NavbarProps) {
                                                         data-cart-proceed="true"
                                                         onClick={() => {
                                                             if (cartItems.length > 0) {
-                                                                // Use Next.js router instead of window.location
                                                                 router.push("/checkout");
                                                             } else {
-                                                                // If cart is empty, redirect to shops section
                                                                 if (pathname === "/") {
                                                                     const shopsElement = document.getElementById("shops");
                                                                     if (shopsElement) {
@@ -282,33 +259,32 @@ export default function Navbar({ user }: NavbarProps) {
                             </div>
                         )}
 
-                        {!user ? (
+                        {!isAuthenticated ? (
                             <>
                                 <SiteButton text="Login" variant="outlined" onClick={handleLogin} />
                                 <SiteButton text="Signup" variant="filled" onClick={handleSignup} />
                             </>
                         ) : (
                             <div className="relative" ref={profileRef}>
-                                {/* Profile Picture */}
                                 <Image
-                                    src={user.imageSrc}
-                                    alt={user.name}
+                                    src={user?.image || "/default-avatar.png"}
+                                    alt={user?.name || "User"}
                                     width={40}
                                     height={40}
                                     className="rounded-full cursor-pointer"
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                 />
 
-                                {/* Profile Popup */}
                                 {isProfileOpen && (
                                     <div className="absolute top-[50px] right-0 bg-white shadow-lg p-4 rounded-md w-[200px] z-50">
-                                        <h5 className="text-[16px] font-medium">{user.name}</h5>
-                                        <p className="text-[14px] text-gray-500 mb-3">{user.email}</p>
+                                        <h5 className="text-[16px] font-medium">{user?.name || "User"}</h5>
+                                        <p className="text-[14px] text-gray-500 mb-3">{user?.email || ""}</p>
                                         <SiteButton
                                             text="Logout"
                                             variant="outlined"
-                                            onClick={() => {
+                                            onClick={async () => {
                                                 setIsProfileOpen(false);
+                                                await logout();
                                                 router.push("/login");
                                             }}
                                             fullWidth
@@ -321,8 +297,7 @@ export default function Navbar({ user }: NavbarProps) {
                 </div>
 
                 <div className="lg:hidden flex items-center gap-3">
-                    {/* Only show cart when user is logged in */}
-                    {user && (
+                    {isAuthenticated && (
                         <div className="relative">
                             <button
                                 className="p-1 rounded-full"
@@ -383,7 +358,7 @@ export default function Navbar({ user }: NavbarProps) {
                         ))}
                     </div>
 
-                    {!user ? (
+                    {!isAuthenticated ? (
                         <div className="flex flex-col items-stretch gap-[20px] mt-auto">
                             <SiteButton
                                 text="Login"
@@ -406,22 +381,23 @@ export default function Navbar({ user }: NavbarProps) {
                         <div className="flex flex-col items-start gap-[10px] mt-auto">
                             <div className="flex items-center gap-[10px]">
                                 <Image
-                                    src={user.imageSrc}
-                                    alt={user.name}
+                                    src={user?.image || "/default-avatar.png"}
+                                    alt={user?.name || "User"}
                                     width={50}
                                     height={50}
                                     className="rounded-full"
                                 />
                                 <div>
-                                    <h5 className="text-[16px] font-medium">{user.name}</h5>
-                                    <p className="text-[14px] text-gray-500">{user.email}</p>
+                                    <h5 className="text-[16px] font-medium">{user?.name || "User"}</h5>
+                                    <p className="text-[14px] text-gray-500">{user?.email || ""}</p>
                                 </div>
                             </div>
                             <SiteButton
                                 text="Logout"
                                 variant="outlined"
-                                onClick={() => {
+                                onClick={async () => {
                                     setIsOpen(false);
+                                    await logout();
                                     router.push("/login");
                                 }}
                                 fullWidth
@@ -431,7 +407,7 @@ export default function Navbar({ user }: NavbarProps) {
                 </div>
             )}
 
-            {isCartOpen && user && (
+            {isCartOpen && isAuthenticated && (
                 <div
                     ref={cartRef}
                     className="lg:hidden fixed top-[70px] right-4 left-4 bg-white shadow-lg rounded-md z-50 py-3 px-4 max-h-[80vh] overflow-auto"
@@ -499,10 +475,8 @@ export default function Navbar({ user }: NavbarProps) {
                                     data-cart-proceed="true"
                                     onClick={() => {
                                         if (cartItems.length > 0) {
-                                            // Use Next.js router instead of window.location
                                             router.push("/checkout");
                                         } else {
-                                            // If cart is empty, redirect to shops section
                                             if (pathname === "/") {
                                                 const shopsElement = document.getElementById("shops");
                                                 if (shopsElement) {

@@ -64,30 +64,28 @@ const FAQsSection: React.FC = () => {
   };
 
   return (
-    <section className="w-full bg-gray-100 py-6">
+    <section className="w-[var(--section-width)] mt-[var(--section-top-padding)]">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-left text-2xl font-bold mb-6">Frequently Asked Questions</h2>
         <div className="space-y-4">
           {faqs.map((faq, index) => (
             <div key={index} className="faq-item">
               <button
-                className={`w-full flex justify-between items-center text-left text-white font-semibold text-lg py-4 px-6 rounded-full`}
-                style={{ backgroundColor: '#FF3366' }} // Pink color from the screenshot
+                className={`w-full flex justify-between items-center text-left py-4 px-6 rounded-full bg-[var(--bg2)]`}
                 onClick={() => toggleFAQ(index)}
                 aria-expanded={activeIndex === index}
               >
-                <span>{faq.question}</span>
+                <h5>{faq.question}</h5>
                 <span
-                  className={`transform transition-transform ${
-                    activeIndex === index ? 'rotate-180' : ''
-                  }`}
+                  className={`transform transition-transform ${activeIndex === index ? 'rotate-180' : ''
+                    }`}
                 >
                   ▼
                 </span>
               </button>
               {activeIndex === index && (
                 <div className="w-full mt-2 p-6 bg-white border-t-4" style={{ borderColor: '#FF3366' }}>
-                  <p className="text-gray-700">{faq.answer}</p>
+                  <p>{faq.answer}</p>
                 </div>
               )}
             </div>

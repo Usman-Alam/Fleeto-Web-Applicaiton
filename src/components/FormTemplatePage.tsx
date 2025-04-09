@@ -40,13 +40,14 @@ export default function FormTemplatePage({
             >
                 <h3>{title}</h3>
 
-                {error && (
-                    <div className="w-full p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
-                        {error}
-                    </div>
-                )}
-
                 <form onSubmit={onSubmit} className="flex flex-col lg:gap-[24px] md:gap-[20px] gap-[16px] w-full">
+                    {/* Error Display - Moved inside form for better positioning */}
+                    {error && (
+                        <div className="w-full p-3 bg-red-100 border border-red-400 text-[var(--error)] rounded-md text-center">
+                            {error}
+                        </div>
+                    )}
+                    
                     {fields.length > 5 ? (
                         <div className="flex flex-col md:gap-[20px] gap-[16px] w-full">
                             {/* First Two Fields */}
@@ -107,6 +108,7 @@ export default function FormTemplatePage({
                         variant="filled" 
                         type="submit" 
                         disabled={disabled}
+                        fullWidth
                     />
                 </form>
             </div>
