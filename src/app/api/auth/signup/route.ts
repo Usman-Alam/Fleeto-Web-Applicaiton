@@ -1,4 +1,3 @@
-// import { connectDB } from "@lib/dbConnection";
 import User from "@models/user";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
@@ -52,6 +51,3 @@ export async function POST(req: Request) {
   }
   return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 }
-
-
-

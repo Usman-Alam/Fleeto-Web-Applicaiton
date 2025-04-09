@@ -36,10 +36,10 @@ export default function RestaurantPage() {
     const fetchRestaurantData = async () => {
       const mockData: RestaurantData = {
         id,
-        name: "Imtiaz Super Market",
+        name: "Zakir Tikka",
         description:
-          "Offering a wide selection of groceries, personal care, kitchen items, and home essentials.",
-        image: "/restaurant-banner.jpg",
+          "Pakistani BBQ restaurant serving sizzling tikka, kebabs, and karahi, known for its rich flavors and traditional charcoal-grilled taste.",
+        image: "/shops/zakir.jpg",
         rating: 4.6,
         deliveryTime: "30-40 mins",
         deliveryFee: "Free",
@@ -47,23 +47,23 @@ export default function RestaurantPage() {
           {
             id: "1",
             name: "Chicken Biryani",
-            description: "Delicious chicken biryani served with raita.",
+            description: "Delicious chicken biryani, filled with masala and served with raita.",
             price: "$5.99",
-            image: "/menu-item-1.jpg",
+            image: "/shops/chicken_biryani.jpeg",
           },
           {
             id: "2",
-            name: "Beef Burger",
-            description: "Juicy beef burger with fresh lettuce and tomato.",
+            name: "Chicken Karahi",
+            description: "Delicious chicken karahi cooked in a rich, flavorful tomato-based gravy and ginger.",
             price: "$4.99",
-            image: "/menu-item-2.jpg",
+            image: "/shops/chicken_karahi.jpeg",
           },
           {
             id: "3",
-            name: "Veggie Pizza",
-            description: "Cheesy veggie pizza with a crispy crust.",
+            name: "Reshmi Kebab",
+            description: "Tender reshmi kebabs made with marinated chicken, grilled to perfection.",
             price: "$7.99",
-            image: "/menu-item-3.jpg",
+            image: "/shops/reshmi_kebab.jpeg",
           },
         ],
       };

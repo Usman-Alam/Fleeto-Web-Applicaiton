@@ -36,10 +36,10 @@ export default function MedicinePage() {
     const fetchMedicineData = async () => {
       const mockData: MedicineData = {
         id,
-        name: "Imtiaz Pharmacy",
+        name: "Pakistan Pharmacy",
         description:
           "Providing a wide range of medicines, healthcare products, and personal care items.",
-        image: "/pharmacy-banner.jpg",
+        image: "/shops/pakistan_pharma.jpg",
         rating: 4.8,
         deliveryTime: "20-30 mins",
         deliveryFee: "Free",
@@ -49,21 +49,21 @@ export default function MedicinePage() {
             name: "Paracetamol",
             description: "Pain reliever and fever reducer.",
             price: "$2.99",
-            image: "/medicine-item-1.jpg",
+            image: "/shops/paracetamol.jpg",
           },
           {
             id: "2",
             name: "Vitamin C Tablets",
             description: "Boosts immunity and overall health.",
             price: "$4.99",
-            image: "/medicine-item-2.jpg",
+            image: "/shops/vitaminc.jpeg",
           },
           {
             id: "3",
             name: "Cough Syrup",
             description: "Relieves cough and throat irritation.",
             price: "$5.99",
-            image: "/medicine-item-3.jpg",
+            image: "/shops/coughsyp.jpeg",
           },
         ],
       };
