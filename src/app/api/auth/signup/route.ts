@@ -12,13 +12,16 @@ export async function POST(req: Request) {
     // --------------------------------
     // Validation for User Registration
     // --------------------------------
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      console.log("User already exists");
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 400 }
-      );
+    console.log("I am here");
+    try {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        console.log("User already exists");
+        return NextResponse.json({ error: "User already exists" }, { status: 400 });
+      }
+    } catch (err) {
+      console.error("❌ Error checking for existing user:", err);
+      return NextResponse.json({ error: "DB error on checking user" }, { status: 500 });
     }
 
     // -------------
