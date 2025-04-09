@@ -267,7 +267,7 @@ export default function Navbar() {
                         ) : (
                             <div className="relative" ref={profileRef}>
                                 <Image
-                                    src={user?.image || "/default-avatar.png"}
+                                    src={user?.image || "/no_profile.png"}
                                     alt={user?.name || "User"}
                                     width={40}
                                     height={40}
