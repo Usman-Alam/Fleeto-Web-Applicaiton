@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
-import Navbar from "@components/NavBar";
 import { CartProvider } from "@contexts/CartContext";
+import ClientLayout from "@components/ClientLayout";
+import Navbar from "@components/NavBar";
 
 // For variable font
 const inter = localFont({
@@ -16,13 +17,13 @@ export const metadata: Metadata = {
   description: "FLEETO DOESN'T NEED ANY DESCRIPTION 😒",
 };
 
-const user = {
-  imageSrc: "/user.jpg",
-  name: "John Doe",
-  email: "johndoe@example.com",
-};
+// const user = {
+//   imageSrc: "/user.jpg",
+//   name: "John Doe",
+//   email: "johndoe@example.com",
+// };
 
-// const user = null
+const user = null
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
