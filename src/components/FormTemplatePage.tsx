@@ -13,16 +13,24 @@ interface FormTemplateProps {
         required?: boolean;
     }[];
     showTerms?: boolean;
+    termsValue?: boolean;
+    onTermsChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     buttonText: string;
     onSubmit: (e: React.FormEvent) => void;
+    error?: string | null;
+    disabled?: boolean;
 }
 
 export default function FormTemplatePage({
     title,
     fields,
     showTerms = false,
+    termsValue = false,
+    onTermsChange,
     buttonText,
     onSubmit,
+    error = null,
+    disabled = false,
 }: FormTemplateProps) {
     return (
         <div className="w-[var(--section-width)] flex flex-row justify-center items-center pt-[var(--page-top-padding)]">
@@ -31,6 +39,12 @@ export default function FormTemplatePage({
                 style={{ boxShadow: "0px 1px 10px var(--shadow)" }}
             >
                 <h3>{title}</h3>
+
+                {error && (
+                    <div className="w-full p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={onSubmit} className="flex flex-col lg:gap-[24px] md:gap-[20px] gap-[16px] w-full">
                     {fields.length > 5 ? (
@@ -67,11 +81,14 @@ export default function FormTemplatePage({
                             <input
                                 type="checkbox"
                                 id="terms"
+                                name="terms"
+                                checked={termsValue}
+                                onChange={onTermsChange}
                                 required
                                 className="w-[18px] h-[18px] flex-shrink-0 accent-[var(--accent)] cursor-pointer"
                             />
                             <label htmlFor="terms" className="text-[14px]">
-                                I agree to Fleeto’s{" "}
+                                I agree to Fleeto's{" "}
                                 <a href="/terms-and-conditions" className="text-[var(--accent)] font-medium">
                                     Terms & Conditions
                                 </a>{" "}
@@ -85,7 +102,12 @@ export default function FormTemplatePage({
                     )}
 
                     {/* Submit Button */}
-                    <SiteButton text={buttonText} variant="filled" type="submit" />
+                    <SiteButton 
+                        text={buttonText} 
+                        variant="filled" 
+                        type="submit" 
+                        disabled={disabled}
+                    />
                 </form>
             </div>
         </div>
