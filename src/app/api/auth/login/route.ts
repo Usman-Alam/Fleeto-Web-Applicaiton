@@ -7,10 +7,10 @@ import connectLoginDB from "../../../../../server/loginServer";
 export async function POST(req: Request) {
     try {
         await connectLoginDB();
-        // const { firstname, lastname, email, phone, address, password } = await req.json()
-        // const user = await User.findOne({email}).select("_id");
-        // console.log("User", user);
-        // return NextResponse.json({user});
+        const { firstname, lastname, email, phone, address, password } = await req.json()
+        const user = await User.findOne({email}).select("_id");
+        console.log("User", user);
+        return NextResponse.json({user});
     } catch (error) {
         console.log(error,"junk")
     }
