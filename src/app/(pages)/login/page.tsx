@@ -6,14 +6,29 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
+<<<<<<< Updated upstream
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(''); // To handle error message
   const router = useRouter();
+=======
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, seterror] = useState("")
+
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+>>>>>>> Stashed changes
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+<<<<<<< Updated upstream
     // Perform the login attempt
     const res = await signIn("credentials", {
       redirect: false,
@@ -33,6 +48,19 @@ export default function Login() {
     } else {
       // Redirect if successful
       router.replace("/");
+=======
+    try {
+      const res = await signIn('credentials', {
+        email: formData.email, password: formData.password, redirect: false,
+      });
+
+      if (res?.error) {
+        seterror("Invalid Credentials")
+      }
+      router.replace('dashboard')
+    } catch (error) {
+      console.log(error);
+>>>>>>> Stashed changes
     }
   };
 
