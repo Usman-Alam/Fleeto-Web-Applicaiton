@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   address: { type: String },
   password: { type: String, required: true },
-  hasGivenFeedback: { type: Boolean, required: true},
-});
+  // hasGivenFeedback: { type: Boolean, required: true},
+}, { collection: 'users' });
 
 const User = models.User || mongoose.model("User", UserSchema)
 // export default mongoose.models.User || mongoose.model("User", UserSchema);
