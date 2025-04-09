@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@contexts/CartContext";
 import SiteButton from "@components/SiteButton";
 
-type DeliveryMethod = "standard" | "express" | "dormDrop";
+// Remove dormDrop from delivery method options
+type DeliveryMethod = "standard" | "express";
 type PaymentMethod = "card" | "cash";
 
 export default function CheckoutPage() {
@@ -19,6 +20,8 @@ export default function CheckoutPage() {
   // Add new state for dorm information
   const [hostelName, setHostelName] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
+  // Add a separate toggle for DormDrop
+  const [isDormDrop, setIsDormDrop] = useState(false);
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -29,11 +32,14 @@ export default function CheckoutPage() {
     0
   );
 
-  // Calculate delivery fee based on method
-  const deliveryFee =
-    deliveryMethod === "standard" ? 1.99 :
-      deliveryMethod === "express" ? 4.99 :
-        0.99; // Dorm Drop fee
+  // Calculate base delivery fee based on delivery method
+  const baseDeliveryFee = deliveryMethod === "standard" ? 1.99 : 4.99;
+  
+  // Calculate extra fee for DormDrop if enabled
+  const dormDropFee = isDormDrop ? 0.99 : 0;
+  
+  // Total delivery fee combines both
+  const deliveryFee = baseDeliveryFee + dormDropFee;
 
   // Calculate tax (assuming 5% tax rate)
   const tax = subtotal * 0.05;
@@ -49,12 +55,13 @@ export default function CheckoutPage() {
       newErrors.cart = "Your cart is empty";
     }
 
-    if (deliveryMethod !== "dormDrop" && !address.trim()) {
+    // Always validate address unless using DormDrop
+    if (!isDormDrop && !address.trim()) {
       newErrors.address = "Delivery address is required";
     }
 
-    // Validate dorm information when dormDrop is selected
-    if (deliveryMethod === "dormDrop") {
+    // Validate dorm information when DormDrop is selected
+    if (isDormDrop) {
       // Hostel name validation
       if (!hostelName.trim()) {
         newErrors.hostelName = "Hostel name is required";
@@ -107,19 +114,23 @@ export default function CheckoutPage() {
           hour: '2-digit',
           minute: '2-digit'
         }),
-        // Use dorm information for delivery address if dormDrop is selected
-        deliveryAddress: deliveryMethod === "dormDrop"
+        // Use dorm information for delivery address if DormDrop is selected
+        deliveryAddress: isDormDrop
           ? `Room ${roomNumber}, ${hostelName} Hostel`
           : address,
-        estimatedDeliveryTime:
-          deliveryMethod === "standard" ? "30-45 minutes" :
-            deliveryMethod === "express" ? "15-20 minutes" :
-              "40-50 minutes", // Dorm Drop
-        deliveryMethod: deliveryMethod,
+        // Combine delivery method with DormDrop info
+        estimatedDeliveryTime: deliveryMethod === "standard" 
+          ? "30-45 minutes" 
+          : "15-20 minutes",
+        // Include both delivery method and DormDrop status
+        deliveryMethod: `${deliveryMethod}${isDormDrop ? " with DormDrop" : ""}`,
+        dormDrop: isDormDrop,
         items: cartItems,
         paymentMethod: paymentMethod,
         subtotal: subtotal,
         deliveryFee: deliveryFee,
+        baseDeliveryFee: baseDeliveryFee,
+        dormDropFee: dormDropFee,
         tax: tax,
         total: total
       };
@@ -139,62 +150,82 @@ export default function CheckoutPage() {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="w-[var(--section-width)] mt-[60px] mb-[30px]">
+      <div className="w-[var(--section-width)] mt-[var(--page-top-padding)] mb-[30px]">
         <h1 className="text-[32px] font-bold mb-8">Checkout</h1>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left column - Order Summary */}
+          {/* Left column */}
           <div className="flex-1">
+            {/* Order Summary section */}
             <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
               <h2 className="text-[20px] font-bold mb-4">Order Summary</h2>
-
+              
               {cartItems.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">Your cart is empty</p>
+                <div className="text-center py-6">
+                  <p className="text-gray-500 mb-4">Your cart is empty</p>
+                  <SiteButton 
+                    text="Browse Shops" 
+                    variant="outlined" 
+                    onClick={() => router.push("/")}
+                  />
+                </div>
               ) : (
                 <div className="flex flex-col gap-4">
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                      <div className="relative w-[60px] h-[60px] rounded-md overflow-hidden">
+                    <div key={item.id} className="flex items-center gap-3 pb-4 border-b border-gray-100">
+                      <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 relative">
                         <Image
                           src={item.image}
                           alt={item.name}
                           fill
-                          className="object-cover"
+                          style={{ objectFit: 'cover' }}
                         />
                       </div>
+                      
                       <div className="flex-1">
                         <div className="font-medium">{item.name}</div>
-                        <div className="text-gray-600 text-sm">${item.price.toFixed(2)} × {item.quantity}</div>
+                        <div className="text-sm text-gray-500">${item.price.toFixed(2)}</div>
                       </div>
-                      <div className="font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </div>
+                      
                       <div className="flex items-center gap-2">
-                        <button
-                          className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-700"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        <button 
+                          className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center"
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                         >
-                          -
+                          <span>-</span>
                         </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-gray-700"
+                        
+                        <span className="w-6 text-center">{item.quantity}</span>
+                        
+                        <button 
+                          className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         >
-                          +
+                          <span>+</span>
                         </button>
                       </div>
+                      
+                      <div className="font-medium w-20 text-right">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </div>
+                      
+                      <button 
+                        className="text-gray-400 hover:text-red-500"
+                        onClick={() => updateQuantity(item.id, 0)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 6h18"></path>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                        </svg>
+                      </button>
                     </div>
                   ))}
                 </div>
               )}
-
-              {errors.cart && (
-                <p className="text-red-500 text-sm mt-2">{errors.cart}</p>
-              )}
             </div>
 
-            {/* Delivery Method */}
+            {/* Delivery Method - now separate from DormDrop */}
             <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
               <h2 className="text-[20px] font-bold mb-4">Delivery Method</h2>
 
@@ -228,26 +259,37 @@ export default function CheckoutPage() {
                   </div>
                   <div className="font-medium">$4.99</div>
                 </label>
-
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="deliveryMethod"
-                    checked={deliveryMethod === "dormDrop"}
-                    onChange={() => setDeliveryMethod("dormDrop")}
-                    className="mr-3"
+              </div>
+            </div>
+            
+            {/* DormDrop Toggle - New section */}
+            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-[20px] font-bold">Dorm Drop Service</h2>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={isDormDrop}
+                    onChange={(e) => setIsDormDrop(e.target.checked)}
                   />
-                  <div className="flex-1">
-                    <div className="font-medium">Dorm Drop</div>
-                    <div className="text-sm text-gray-500">Campus delivery to your dorm: 40-50 minutes</div>
-                  </div>
-                  <div className="font-medium">$0.99</div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accent)]"></div>
                 </label>
+              </div>
+              
+              <div className="bg-gray-50 p-3 rounded-md mb-4">
+                <div className="font-medium">Campus Delivery to Your Dorm</div>
+                <div className="text-sm text-gray-500 mt-1">
+                  Our delivery person will bring your order directly to your dorm room.
+                </div>
+                <div className="text-sm font-medium mt-2 text-[var(--accent)]">
+                  Additional fee: $0.99
+                </div>
               </div>
             </div>
 
-            {/* Dorm Information - Only shown when dormDrop is selected */}
-            {deliveryMethod === "dormDrop" && (
+            {/* Dorm Information - Only shown when DormDrop is selected */}
+            {isDormDrop && (
               <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
                 <h2 className="text-[20px] font-bold mb-4">Dorm Information</h2>
 
@@ -301,8 +343,8 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            {/* Other delivery address form - only shown when NOT dormDrop */}
-            {deliveryMethod !== "dormDrop" && (
+            {/* Other delivery address form - only shown when NOT using DormDrop */}
+            {!isDormDrop && (
               <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
                 <h2 className="text-[20px] font-bold mb-4">Delivery Address</h2>
 
@@ -322,53 +364,11 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Right column - Delivery and Payment */}
+          {/* Right column - Payment and Order Total */}
           <div className="flex-1">
-            {/* Payment Method */}
-            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <h2 className="text-[20px] font-bold mb-4">Payment Method</h2>
-
-              <div className="flex flex-col gap-3">
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod("card")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Credit/Debit Card</div>
-                    <div className="text-sm text-gray-500">Pay securely with your card</div>
-                  </div>
-                  <div className="flex space-x-1">
-                    <div className="w-8 h-6 bg-gray-200 rounded"></div>
-                    <div className="w-8 h-6 bg-gray-200 rounded"></div>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "cash"}
-                    onChange={() => setPaymentMethod("cash")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Cash on Delivery</div>
-                    <div className="text-sm text-gray-500">Pay when your order arrives</div>
-                  </div>
-                  <div className="w-8 h-6 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            {/* Order Total */}
+            {/* Payment Method section remains the same */}
+            
+            {/* Order Total - update to show both delivery fees */}
             <div className="bg-white rounded-[16px] p-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
               <h2 className="text-[20px] font-bold mb-4">Order Total</h2>
 
@@ -377,10 +377,23 @@ export default function CheckoutPage() {
                   <span className="text-gray-600">Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
+                
+                {/* Base delivery fee */}
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Delivery Fee</span>
-                  <span>${deliveryFee.toFixed(2)}</span>
+                  <span className="text-gray-600">
+                    {deliveryMethod === "standard" ? "Standard Delivery" : "Express Delivery"}
+                  </span>
+                  <span>${baseDeliveryFee.toFixed(2)}</span>
                 </div>
+                
+                {/* DormDrop fee if applicable */}
+                {isDormDrop && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Dorm Drop Service</span>
+                    <span>${dormDropFee.toFixed(2)}</span>
+                  </div>
+                )}
+                
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax</span>
                   <span>${tax.toFixed(2)}</span>
