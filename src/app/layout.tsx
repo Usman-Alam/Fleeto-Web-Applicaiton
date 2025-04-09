@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import "./globals.css";
 import Navbar from "@components/NavBar";
 import { CartProvider } from "@contexts/CartContext";
+// import { useState } from "react";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,6 +23,13 @@ const user = {
   name: "John Doe",
   email: "johndoe@example.com",
 };
+
+// const [userState, setUserState] = useState(false)
+
+// if (user !== null) {
+//   setUserState(true)
+// }
+
 
 // const user = null
 

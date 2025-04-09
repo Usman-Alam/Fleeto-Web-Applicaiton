@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   address: { type: String },
   password: { type: String, required: true },
+  hasGivenFeedback: { type: Boolean, required: true},
 });
 
 const User = models.User || mongoose.model("User", UserSchema)
