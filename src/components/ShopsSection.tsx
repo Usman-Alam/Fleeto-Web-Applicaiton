@@ -49,10 +49,11 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
                     {data.slice(0, visibleItems).map((item) => (
                         <div
                             key={item.slug}
-                            className="flex flex-col items-stretch gap-[20px] bg-[var(--bg2)] rounded-[16px]"
+                            className="flex flex-col items-stretch gap-[20px] bg-[var(--bg2)] rounded-[16px] overflow-hidden"
                             style={{ boxShadow: "0px 1px 10px var(--shadow)" }}
                         >
-                            <div className="h-[220px] relative">
+                            {/* Updated Image Container */}
+                            <div className="h-[220px] relative overflow-hidden ">
                                 <Image
                                     src={item.image}
                                     alt={item.title}
