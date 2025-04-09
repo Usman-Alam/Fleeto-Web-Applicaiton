@@ -34,30 +34,34 @@ export default function OrderConfirmation() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   
   useEffect(() => {
-    // Try to get order details from URL query
-    const orderDetailsStr = searchParams.get('orderDetails');
-    
-    if (orderDetailsStr) {
-      try {
-        const parsedOrderDetails = JSON.parse(decodeURIComponent(orderDetailsStr));
-        setOrderDetails(parsedOrderDetails);
-      } catch (error) {
-        console.error("Error parsing order details:", error);
-        // Fallback to generating a random order
+    // Only clear cart once when component mounts
+    clearCart();
+  }, []); // Empty dependency array to run only once
+  
+  useEffect(() => {
+    // This effect should only run once to get/set order details
+    if (orderDetails === null) {
+      // Try to get order details from URL query
+      const orderDetailsStr = searchParams.get('orderDetails');
+      
+      if (orderDetailsStr) {
+        try {
+          const parsedOrderDetails = JSON.parse(decodeURIComponent(orderDetailsStr));
+          setOrderDetails(parsedOrderDetails);
+        } catch (error) {
+          console.error("Error parsing order details:", error);
+          // Fallback to generating a random order
+          generateRandomOrder();
+        }
+      } else {
+        // No details provided, generate random order
         generateRandomOrder();
       }
-    } else {
-      // No details provided, generate random order
-      generateRandomOrder();
     }
-    
-    // Clear cart after showing confirmation
-    return () => {
-      clearCart();
-    };
-  }, [searchParams, clearCart]);
+  }, [searchParams, orderDetails]); // Only depend on searchParams and orderDetails
   
   const generateRandomOrder = () => {
+    // Create a default/fallback order
     setOrderDetails({
       orderNumber: `FLT-${Math.floor(100000 + Math.random() * 900000)}`,
       orderDate: new Date().toLocaleDateString('en-US', {
@@ -69,7 +73,15 @@ export default function OrderConfirmation() {
       }),
       deliveryAddress: "123 Default Address St.",
       estimatedDeliveryTime: "20-30 minutes",
-      items: [],
+      items: [
+        {
+          id: "default-item-1",
+          name: "Sample Item",
+          price: 9.99,
+          quantity: 1,
+          image: "/images/food-placeholder.jpg"
+        }
+      ],
     });
   };
   
