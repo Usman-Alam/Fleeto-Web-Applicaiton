@@ -1,12 +1,15 @@
+import React from "react";
 import Link from "next/link";
 
 interface ButtonProps {
     text: string;
-    onClick?: () => void;
+    onClick?: ((e?: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
     variant?: "filled" | "outlined";
     href?: string;
     type?: "button" | "submit";
     fullWidth?: boolean;
+    className?: string;
+    disabled?: boolean;
 }
 
 export default function SiteButton({
@@ -16,6 +19,8 @@ export default function SiteButton({
     href,
     type = "button",
     fullWidth = false,
+    className = "",
+    disabled = false,
 }: ButtonProps) {
     const baseStyles =
         "flex flex-row justify-center items-center p-[8px_12px] lg:p-[10px_16px] h-auto rounded-[8px] font-medium text-[20px] border border-[var(--accent)]";
@@ -26,13 +31,14 @@ export default function SiteButton({
     };
 
     const widthStyle = fullWidth ? "w-full" : "w-auto";
+    const disabledClass = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
 
     if (href) {
         return (
             <Link
                 href={href}
-                onClick={onClick}
-                className={`${baseStyles} ${variantStyles[variant]} ${widthStyle}`}
+                onClick={onClick as any}
+                className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
             >
                 {text}
             </Link>
@@ -41,9 +47,10 @@ export default function SiteButton({
 
     return (
         <button
-            className={`${baseStyles} ${variantStyles[variant]} ${widthStyle}`}
+            className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
             onClick={onClick}
             type={type}
+            disabled={disabled}
         >
             {text}
         </button>

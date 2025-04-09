@@ -22,10 +22,10 @@ export default function Navbar({ user }: NavbarProps) {
     const [isHidden, setIsHidden] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
-    
+
     // Get cart state from context instead of local state
     const { cartItems, updateQuantity } = useCart();
-    
+
     const menuRef = useRef<HTMLDivElement>(null);
     const profileRef = useRef<HTMLDivElement>(null);
     const cartRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ export default function Navbar({ user }: NavbarProps) {
 
     const handleNavigation = (href: string) => {
         const sectionId = href.substring(1);
-        
+
         if (pathname === "/") {
             scrollToSection(sectionId);
         } else {
@@ -103,7 +103,7 @@ export default function Navbar({ user }: NavbarProps) {
             ) {
                 setIsOpen(false);
             }
-            
+
             // Check if we clicked outside the profile
             if (
                 profileRef.current &&
@@ -112,23 +112,17 @@ export default function Navbar({ user }: NavbarProps) {
             ) {
                 setIsProfileOpen(false);
             }
+
+            // Removed cart click outside handler to keep cart open
+            // If you only want to close cart manually via buttons
             
-            // Check if we clicked outside the cart
-            // But only if the target doesn't have the data-cart-control attribute
-            const target = event.target as HTMLElement;
-            if (
-                cartRef.current &&
-                !cartRef.current.contains(target) &&
-                isCartOpen &&
-                !target.closest('[data-cart-control]') // Don't close if clicking quantity controls
-            ) {
-                setIsCartOpen(false);
-            }
+            // FOR DEBUGGING - remove these lines when fixed
+            // If you need to close cart through other means, add specific close buttons
         }
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isOpen, isProfileOpen, isCartOpen]); // Add isCartOpen to dependencies
+    }, [isOpen, isProfileOpen, isCartOpen]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? "hidden" : "";
@@ -182,7 +176,7 @@ export default function Navbar({ user }: NavbarProps) {
                         {/* Only show cart when user is logged in */}
                         {user && (
                             <div className="relative" ref={cartRef}>
-                                <button 
+                                <button
                                     className="p-1 rounded-full"
                                     onClick={() => setIsCartOpen(!isCartOpen)}
                                 >
@@ -190,7 +184,7 @@ export default function Navbar({ user }: NavbarProps) {
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                         </svg>
-                                        
+
                                         {cartItemCount > 0 && (
                                             <div className="absolute -bottom-1 -right-1 bg-[var(--accent)] text-white text-[10px] font-bold rounded-full w-[16px] h-[16px] flex items-center justify-center">
                                                 {cartItemCount > 9 ? '9+' : cartItemCount}
@@ -202,7 +196,7 @@ export default function Navbar({ user }: NavbarProps) {
                                 {isCartOpen && (
                                     <div className="absolute top-[40px] right-0 bg-white shadow-lg rounded-md w-[320px] z-50 py-3 px-4">
                                         <h5 className="text-[18px] font-medium mb-3">Your Cart</h5>
-                                        
+
                                         {cartItems.length === 0 ? (
                                             <p className="text-center text-gray-500 py-4">Your cart is empty</p>
                                         ) : (
@@ -212,8 +206,8 @@ export default function Navbar({ user }: NavbarProps) {
                                                         <div key={item.id} className="flex items-center gap-3 py-3 border-b border-gray-100">
                                                             <div className="text-gray-500 text-sm">{index + 1}.</div>
                                                             <div className="relative w-[40px] h-[40px] rounded-md overflow-hidden">
-                                                                <Image 
-                                                                    src={item.image} 
+                                                                <Image
+                                                                    src={item.image}
                                                                     alt={item.name}
                                                                     fill
                                                                     className="object-cover"
@@ -224,11 +218,11 @@ export default function Navbar({ user }: NavbarProps) {
                                                                 <div className="text-gray-600 text-sm">${item.price.toFixed(2)}</div>
                                                             </div>
                                                             <div className="flex items-center gap-2">
-                                                                <button 
+                                                                <button
                                                                     className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center"
                                                                     data-cart-control="true"
                                                                     onClick={(e) => {
-                                                                        e.preventDefault();
+                                                                        e?.preventDefault();
                                                                         e.stopPropagation();
                                                                         handleUpdateQuantity(item.id, item.quantity - 1, e);
                                                                     }}
@@ -236,11 +230,11 @@ export default function Navbar({ user }: NavbarProps) {
                                                                     -
                                                                 </button>
                                                                 <span>{item.quantity}</span>
-                                                                <button 
+                                                                <button
                                                                     className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center"
                                                                     data-cart-control="true"
                                                                     onClick={(e) => {
-                                                                        e.preventDefault();
+                                                                        e?.preventDefault();
                                                                         e.stopPropagation();
                                                                         handleUpdateQuantity(item.id, item.quantity + 1, e);
                                                                     }}
@@ -251,19 +245,33 @@ export default function Navbar({ user }: NavbarProps) {
                                                         </div>
                                                     ))}
                                                 </div>
-                                                
+
                                                 <div className="mt-3 pt-3 border-t border-gray-200">
                                                     <div className="flex justify-between mb-3">
                                                         <span className="font-medium">Total:</span>
                                                         <span className="font-bold">${totalPrice.toFixed(2)}</span>
                                                     </div>
-                                                    <SiteButton 
-                                                        text="Checkout" 
-                                                        variant="filled" 
+                                                    <SiteButton
+                                                        text={cartItems.length > 0 ? "Proceed to Checkout" : "Browse Shops"}
+                                                        variant="filled"
                                                         fullWidth
+                                                        data-cart-proceed="true"
                                                         onClick={() => {
+                                                            if (cartItems.length > 0) {
+                                                                // Use Next.js router instead of window.location
+                                                                router.push("/checkout");
+                                                            } else {
+                                                                // If cart is empty, redirect to shops section
+                                                                if (pathname === "/") {
+                                                                    const shopsElement = document.getElementById("shops");
+                                                                    if (shopsElement) {
+                                                                        shopsElement.scrollIntoView({ behavior: "smooth" });
+                                                                    }
+                                                                } else {
+                                                                    router.push("/#shops");
+                                                                }
+                                                            }
                                                             setIsCartOpen(false);
-                                                            router.push("/checkout");
                                                         }}
                                                     />
                                                 </div>
@@ -296,14 +304,14 @@ export default function Navbar({ user }: NavbarProps) {
                                     <div className="absolute top-[50px] right-0 bg-white shadow-lg p-4 rounded-md w-[200px] z-50">
                                         <h5 className="text-[16px] font-medium">{user.name}</h5>
                                         <p className="text-[14px] text-gray-500 mb-3">{user.email}</p>
-                                        <SiteButton 
-                                            text="Logout" 
-                                            variant="outlined" 
+                                        <SiteButton
+                                            text="Logout"
+                                            variant="outlined"
                                             onClick={() => {
                                                 setIsProfileOpen(false);
                                                 router.push("/login");
-                                            }} 
-                                            fullWidth 
+                                            }}
+                                            fullWidth
                                         />
                                     </div>
                                 )}
@@ -316,7 +324,7 @@ export default function Navbar({ user }: NavbarProps) {
                     {/* Only show cart when user is logged in */}
                     {user && (
                         <div className="relative">
-                            <button 
+                            <button
                                 className="p-1 rounded-full"
                                 onClick={() => setIsCartOpen(!isCartOpen)}
                             >
@@ -324,7 +332,7 @@ export default function Navbar({ user }: NavbarProps) {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
-                                    
+
                                     {cartItemCount > 0 && (
                                         <div className="absolute -bottom-1 -right-1 bg-[var(--accent)] text-white text-[10px] font-bold rounded-full w-[16px] h-[16px] flex items-center justify-center">
                                             {cartItemCount > 9 ? '9+' : cartItemCount}
@@ -334,7 +342,7 @@ export default function Navbar({ user }: NavbarProps) {
                             </button>
                         </div>
                     )}
-                    
+
                     <button
                         className="focus:outline-none w-[40px] h-[40px]"
                         onClick={() => setIsOpen(true)}
@@ -424,12 +432,12 @@ export default function Navbar({ user }: NavbarProps) {
             )}
 
             {isCartOpen && user && (
-                <div 
+                <div
                     ref={cartRef}
                     className="lg:hidden fixed top-[70px] right-4 left-4 bg-white shadow-lg rounded-md z-50 py-3 px-4 max-h-[80vh] overflow-auto"
                 >
                     <h5 className="text-[18px] font-medium mb-3">Your Cart</h5>
-                    
+
                     {cartItems.length === 0 ? (
                         <p className="text-center text-gray-500 py-4">Your cart is empty</p>
                     ) : (
@@ -439,8 +447,8 @@ export default function Navbar({ user }: NavbarProps) {
                                     <div key={item.id} className="flex items-center gap-3 py-3 border-b border-gray-100">
                                         <div className="text-gray-500 text-sm">{index + 1}.</div>
                                         <div className="relative w-[40px] h-[40px] rounded-md overflow-hidden">
-                                            <Image 
-                                                src={item.image} 
+                                            <Image
+                                                src={item.image}
                                                 alt={item.name}
                                                 fill
                                                 className="object-cover"
@@ -451,7 +459,7 @@ export default function Navbar({ user }: NavbarProps) {
                                             <div className="text-gray-600 text-sm">${item.price.toFixed(2)}</div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button 
+                                            <button
                                                 className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center"
                                                 data-cart-control="true"
                                                 onClick={(e) => {
@@ -463,7 +471,7 @@ export default function Navbar({ user }: NavbarProps) {
                                                 -
                                             </button>
                                             <span>{item.quantity}</span>
-                                            <button 
+                                            <button
                                                 className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center"
                                                 data-cart-control="true"
                                                 onClick={(e) => {
@@ -478,19 +486,33 @@ export default function Navbar({ user }: NavbarProps) {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             <div className="mt-3 pt-3 border-t border-gray-200">
                                 <div className="flex justify-between mb-3">
                                     <span className="font-medium">Total:</span>
                                     <span className="font-bold">${totalPrice.toFixed(2)}</span>
                                 </div>
-                                <SiteButton 
-                                    text="Checkout" 
-                                    variant="filled" 
+                                <SiteButton
+                                    text={cartItems.length > 0 ? "Proceed to Checkout" : "Browse Shops"}
+                                    variant="filled"
                                     fullWidth
+                                    data-cart-proceed="true"
                                     onClick={() => {
+                                        if (cartItems.length > 0) {
+                                            // Use Next.js router instead of window.location
+                                            router.push("/checkout");
+                                        } else {
+                                            // If cart is empty, redirect to shops section
+                                            if (pathname === "/") {
+                                                const shopsElement = document.getElementById("shops");
+                                                if (shopsElement) {
+                                                    shopsElement.scrollIntoView({ behavior: "smooth" });
+                                                }
+                                            } else {
+                                                router.push("/#shops");
+                                            }
+                                        }
                                         setIsCartOpen(false);
-                                        router.push("/checkout");
                                     }}
                                 />
                             </div>

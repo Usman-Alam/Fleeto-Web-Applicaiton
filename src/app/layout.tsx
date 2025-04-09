@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import "./globals.css";
 import { CartProvider } from "@contexts/CartContext";
 import ClientLayout from "@components/ClientLayout";
 import Navbar from "@components/NavBar";
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ["400", "700"],
+// For variable font
+const inter = localFont({
+  src: '../../public/fonts/inter/Inter_Variable.ttf',
+  variable: '--font-inter',
   display: 'swap',
-  adjustFontFallback: false,
-  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -29,7 +28,7 @@ const user = null
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className={`${inter.className} flex flex-col items-top justify-center pb-[80px]`}>
+      <body className={`${inter.variable} flex flex-col items-top justify-center pb-[80px]`}>
         <CartProvider>
           <div className="relative flex flex-col items-center justify-top w-full h-full max-w-[1440px] overflow-x-clip">
             <Navbar user={user}/>
