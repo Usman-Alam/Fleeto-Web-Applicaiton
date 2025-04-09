@@ -1,5 +1,8 @@
+"use client";
+
 import HomeHero from "@components/HomeHero";
 import ShopsSection from "@components/ShopsSection";
+import { useEffect, useState } from "react";
 
 // import all these data from database [on .]
 const restaurantData = [
@@ -13,6 +16,7 @@ const restaurantData = [
     category: "Grocery",
     deliveryTime: "40",
     deliveryType: "Free",
+    slug: "imtiaz-super-market",
   },
   {
     title: "Imtiaz Super Market2",
@@ -24,6 +28,7 @@ const restaurantData = [
     category: "Grocery2",
     deliveryTime: "20",
     deliveryType: "2Free",
+    slug: "imtiaz-super-market2",
   },
   {
     title: "Imtiaz Super Market3",
@@ -35,6 +40,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -46,6 +52,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -57,6 +64,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -68,6 +76,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -79,6 +88,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -90,6 +100,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -101,6 +112,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -112,6 +124,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
   {
     title: "Imtiaz Super Market3",
@@ -123,6 +136,7 @@ const restaurantData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
 ];
 
@@ -137,6 +151,7 @@ const medicineData = [
     category: "Grocery",
     deliveryTime: "40",
     deliveryType: "Free",
+    slug: "imtiaz-super-market",
   },
   {
     title: "Imtiaz Super Market2",
@@ -148,6 +163,7 @@ const medicineData = [
     category: "Grocery2",
     deliveryTime: "20",
     deliveryType: "2Free",
+    slug: "imtiaz-super-market2",
   },
   {
     title: "Imtiaz Super Market3",
@@ -159,6 +175,7 @@ const medicineData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
 ];
 
@@ -173,6 +190,7 @@ const groceryData = [
     category: "Grocery",
     deliveryTime: "40",
     deliveryType: "Free",
+    slug: "imtiaz-super-market",
   },
   {
     title: "Imtiaz Super Market2",
@@ -184,6 +202,7 @@ const groceryData = [
     category: "Grocery2",
     deliveryTime: "20",
     deliveryType: "2Free",
+    slug: "imtiaz-super-market2",
   },
   {
     title: "Imtiaz Super Market3",
@@ -195,6 +214,7 @@ const groceryData = [
     category: "3Grocery",
     deliveryTime: "30",
     deliveryType: "Free",
+    slug: "imtiaz-super-market3",
   },
 ];
 

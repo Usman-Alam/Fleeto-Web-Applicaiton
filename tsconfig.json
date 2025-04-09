@@ -24,6 +24,7 @@
       "@public/*": ["./public/*"],
       "@lib/*": ["./src/lib/*"],
       "@models/*": ["./src/models/*"],
+      "@contexts/*": ["./src/contexts/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
