@@ -57,11 +57,32 @@ export default function CheckoutPage() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Order was successful
-      clearCart();
+      // Create order details to pass to confirmation page
+      const orderDetails = {
+        orderNumber: `FLT-${Math.floor(100000 + Math.random() * 900000)}`,
+        orderDate: new Date().toLocaleDateString('en-US', {
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        deliveryAddress: address,
+        estimatedDeliveryTime: deliveryMethod === "standard" ? "30-45 minutes" : "15-20 minutes",
+        items: cartItems,
+        paymentMethod: paymentMethod,
+        subtotal: subtotal,
+        deliveryFee: deliveryFee,
+        tax: tax,
+        total: total
+      };
       
-      // Redirect to confirmation page
-      router.push("/order-confirmation");
+      // Encode the order details as a URL parameter
+      const encodedOrderDetails = encodeURIComponent(JSON.stringify(orderDetails));
+      
+      // Navigate to order confirmation with order details
+      router.push(`/order-confirmation?orderDetails=${encodedOrderDetails}`);
+      
     } catch (error) {
       setErrors({ submit: "Failed to place order. Please try again." });
     } finally {

@@ -1,44 +1,58 @@
 import React from "react";
+import Link from "next/link";
 
 interface ButtonProps {
-  text: string;
-  variant: "filled" | "outlined";
-  fullWidth?: boolean;
-  onClick?: ((e?: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
-  className?: string;
-  disabled?: boolean;
-  type?: "button" | "submit" | "reset";
+    text: string;
+    onClick?: ((e?: React.MouseEvent<HTMLButtonElement>) => void) | undefined;
+    variant?: "filled" | "outlined";
+    href?: string;
+    type?: "button" | "submit";
+    fullWidth?: boolean;
+    className?: string;
+    disabled?: boolean;
 }
 
 export default function SiteButton({
-  text,
-  variant,
-  fullWidth = false,
-  onClick,
-  className = "",
-  disabled = false,
-  type = "button",
-  ...props
+    text,
+    onClick,
+    variant = "filled",
+    href,
+    type = "button",
+    fullWidth = false,
+    className = "",
+    disabled = false,
 }: ButtonProps) {
-  // Determine the button styling based on the variant
-  const baseClasses = "py-[10px] px-[20px] rounded-full text-[16px] font-medium transition-all duration-200";
-  const variantClasses = {
-    filled: "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]",
-    outlined: "border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-hover)] hover:text-white",
-  };
-  
-  const widthClass = fullWidth ? "w-full" : "";
-  const disabledClass = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
-  
-  return (
-    <button
-      className={`${baseClasses} ${variantClasses[variant]} ${widthClass} ${disabledClass} ${className}`}
-      onClick={onClick}
-      disabled={disabled}
-      type={type}
-      {...props}
-    >
-      {text}
-    </button>
-  );
+    const baseStyles =
+        "flex flex-row justify-center items-center p-[8px_12px] lg:p-[10px_16px] h-auto rounded-[8px] font-medium text-[20px] border border-[var(--accent)]";
+
+    const variantStyles = {
+        filled: "bg-[var(--accent)] text-[var(--white)]",
+        outlined: "text-[var(--accent)]",
+    };
+
+    const widthStyle = fullWidth ? "w-full" : "w-auto";
+    const disabledClass = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
+
+    if (href) {
+        return (
+            <Link
+                href={href}
+                onClick={onClick as any}
+                className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
+            >
+                {text}
+            </Link>
+        );
+    }
+
+    return (
+        <button
+            className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
+            onClick={onClick}
+            type={type}
+            disabled={disabled}
+        >
+            {text}
+        </button>
+    );
 }

@@ -113,20 +113,11 @@ export default function Navbar({ user }: NavbarProps) {
                 setIsProfileOpen(false);
             }
 
-            // For the cart, add additional checks to prevent unwanted closing
-            if (isCartOpen) {
-                const target = event.target as HTMLElement;
-
-                // Check for clicks on cart elements or controls
-                const isClickInsideCart = cartRef.current && cartRef.current.contains(target);
-                const isClickOnCartButton = target.closest('[data-cart-control]');
-                const isClickOnProceedButton = target.closest('[data-cart-proceed]');
-
-                // Only close if clicking completely outside AND not on any cart-related elements
-                if (!isClickInsideCart && !isClickOnCartButton && !isClickOnProceedButton) {
-                    setIsCartOpen(false);
-                }
-            }
+            // Removed cart click outside handler to keep cart open
+            // If you only want to close cart manually via buttons
+            
+            // FOR DEBUGGING - remove these lines when fixed
+            // If you need to close cart through other means, add specific close buttons
         }
 
         document.addEventListener("mousedown", handleClickOutside);
@@ -266,11 +257,9 @@ export default function Navbar({ user }: NavbarProps) {
                                                         fullWidth
                                                         data-cart-proceed="true"
                                                         onClick={() => {
-                                                            setIsCartOpen(false);
-                                                            
                                                             if (cartItems.length > 0) {
-                                                                // Direct navigation to checkout
-                                                                window.location.href = "/checkout";
+                                                                // Use Next.js router instead of window.location
+                                                                router.push("/checkout");
                                                             } else {
                                                                 // If cart is empty, redirect to shops section
                                                                 if (pathname === "/") {
@@ -282,6 +271,7 @@ export default function Navbar({ user }: NavbarProps) {
                                                                     router.push("/#shops");
                                                                 }
                                                             }
+                                                            setIsCartOpen(false);
                                                         }}
                                                     />
                                                 </div>
@@ -508,11 +498,9 @@ export default function Navbar({ user }: NavbarProps) {
                                     fullWidth
                                     data-cart-proceed="true"
                                     onClick={() => {
-                                        setIsCartOpen(false);
-                                        
                                         if (cartItems.length > 0) {
-                                            // Direct navigation to checkout
-                                            window.location.href = "/checkout";
+                                            // Use Next.js router instead of window.location
+                                            router.push("/checkout");
                                         } else {
                                             // If cart is empty, redirect to shops section
                                             if (pathname === "/") {
@@ -524,6 +512,7 @@ export default function Navbar({ user }: NavbarProps) {
                                                 router.push("/#shops");
                                             }
                                         }
+                                        setIsCartOpen(false);
                                     }}
                                 />
                             </div>
