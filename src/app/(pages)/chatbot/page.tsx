@@ -60,8 +60,8 @@ export default function ChatbotPage() {
             key={index}
             className={`max-w-[75%] px-4 py-3 text-base rounded-2xl shadow-sm ${
               msg.role === "user"
-                ? "bg-red-600 text-white self-end ml-auto"
-                : "bg-gray-100 text-gray-800 self-start"
+                ? "bg-[var(--accent)] text-white self-end ml-auto"
+                : "bg-[var(--bg2)] text-gray-800 self-start"
             }`}
           >
             <strong>{msg.role === "user" ? "You" : "Gordon"}:</strong> {msg.text}

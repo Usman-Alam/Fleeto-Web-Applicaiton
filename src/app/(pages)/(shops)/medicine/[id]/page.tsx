@@ -101,7 +101,7 @@ export default function MedicinePage() {
           className="object-cover"
         />
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 text-white">
-          <h1 className="text-[24px] font-bold">{medicine.name}</h1>
+        <h1><span className="text-[var(--white)]">{medicine.name}</span></h1>
           <p className="text-[16px]">{medicine.description}</p>
           <div className="flex flex-row items-center gap-[10px] mt-[10px]">
             <div className="flex items-center gap-[5px]">

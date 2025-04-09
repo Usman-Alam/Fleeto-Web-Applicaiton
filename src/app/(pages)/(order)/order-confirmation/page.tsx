@@ -94,7 +94,7 @@ export default function OrderConfirmation() {
     orderDetails.items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
-    <main className="w-full flex flex-col items-center justify-start pt-[100px] px-[5%]">
+    <main className="w-[var(--section-width)] mt-[var(--page-top-padding)] flex flex-col items-center justify-start pt-[40px] px-[5%]">
       <div className="w-full max-w-[800px] bg-white rounded-[16px] p-6 md:p-8 shadow-md">
         {/* Success header */}
         <div className="flex flex-col items-center justify-center text-center mb-8">

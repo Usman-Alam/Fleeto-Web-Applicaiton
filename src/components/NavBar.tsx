@@ -63,6 +63,7 @@ export default function Navbar() {
     const navLinks = [
         { name: "Shops", href: "#shops", onClick: () => handleNavigation("#shops") },
         { name: "FAQs", href: "#faqs", onClick: () => handleNavigation("#faqs") },
+        { name: "Ask Gordon", href: "/chatbot", onClick: () => router.push("/chatbot") }
     ];
 
     useEffect(() => {
