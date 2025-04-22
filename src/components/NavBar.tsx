@@ -278,8 +278,20 @@ export default function Navbar() {
 
                                 {isProfileOpen && (
                                     <div className="absolute top-[50px] right-0 bg-white shadow-lg p-4 rounded-md w-[200px] z-50">
-                                        <h5 className="text-[16px] font-medium">{user?.name || "User"}</h5>
-                                        <p className="text-[14px] text-gray-500 mb-3">{user?.email || ""}</p>
+                                        <div 
+                                            onClick={() => {
+                                                setIsProfileOpen(false);
+                                                router.push("/profile");
+                                            }}
+                                            className="cursor-pointer hover:text-[var(--accent)] transition-colors"
+                                        >
+                                            <h5 className="text-[16px] font-medium flex items-center">
+                                                {user?.name || "User"}
+                                                <span className="ml-1 text-lg text-[var(--accent)]">↗</span>
+                                            </h5>
+                                            <p className="text-[14px] text-gray-500 mb-3">{user?.email || ""}</p>
+                                        </div>
+                                        
                                         <SiteButton
                                             text="Logout"
                                             variant="outlined"
@@ -380,7 +392,13 @@ export default function Navbar() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-start gap-[10px] mt-auto">
-                            <div className="flex items-center gap-[10px]">
+                            <div 
+                                className="flex items-center gap-[10px] cursor-pointer hover:text-[var(--accent)] transition-colors w-full"
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    router.push("/profile");
+                                }}
+                            >
                                 <Image
                                     src={user?.image || "/default-avatar.png"}
                                     alt={user?.name || "User"}

@@ -1,9 +1,6 @@
-"use client";
-
 import HomeHero from "@components/HomeHero";
 import ShopsSection from "@components/ShopsSection";
 import FAQsSection from "@components/FAQsSection";
-import { useEffect, useState } from "react";
 
 // import all these data from database [on .]
 const restaurantData = [

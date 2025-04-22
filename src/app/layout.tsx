@@ -5,6 +5,7 @@ import { CartProvider } from "@contexts/CartContext";
 import Navbar from "@components/NavBar";
 import SessionProvider from "@providers/SessionProvider";
 import { AuthProvider } from "@contexts/AuthContext";
+import Footer from "@/components/Footer";
 
 // For variable font
 const inter = localFont({
@@ -21,13 +22,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className={`${inter.variable} flex flex-col items-top justify-center pb-[80px]`}>
+      <body className={`${inter.variable} flex flex-col items-top justify-center`}>
         <SessionProvider>
           <AuthProvider>
             <CartProvider>
-              <div className="relative flex flex-col items-center justify-top w-full h-full max-w-[1440px] overflow-x-clip">
+              <div className="relative flex flex-col items-center justify-top w-full h-full overflow-x-clip">
                 <Navbar />
                 {children}
+                <Footer />
               </div>
             </CartProvider>
           </AuthProvider>

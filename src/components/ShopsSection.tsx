@@ -33,7 +33,7 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
     };
 
     return (
-        <section className="w-[var(--section-width)] mt-[var(--section-top-padding)] flex flex-col items-start justify-top gap-[48px]">
+        <section className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[var(--section-top-padding)] flex flex-col items-start justify-top gap-[48px]">
             <div className="flex flex-row items-start justify-center gap-[10px]">
                 <div className="relative w-[58px] aspect-[1]">
                     <Image
