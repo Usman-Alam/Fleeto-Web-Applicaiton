@@ -9,7 +9,7 @@ const feedbackSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, "Category is required"],
-    enum: ["App", "Restaurant", "Grocery", "Pharmacy"]
+    enum: ["App", "Restaurant", "Grocery", "Medicine"]
   },
   feedback: {
     type: String,
@@ -35,6 +35,6 @@ const feedbackSchema = new mongoose.Schema({
   }
 });
 
-const feedbackModel = mongoose.models.Feedback || mongoose.model("Feedback", feedbackSchema);
+const feedback = mongoose.models.Feedback || mongoose.model("Feedback", feedbackSchema);
 
-export default feedbackModel;
+export default feedback;

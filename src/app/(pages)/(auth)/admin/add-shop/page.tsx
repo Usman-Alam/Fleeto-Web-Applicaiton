@@ -17,7 +17,7 @@ export default function AddShopPage() {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState<ShopCategory>("Restaurant");
-    const [cuisines, setCuisines] = useState("");
+    const [tags, setTags] = useState("");
 
     // Contact information
     const [phone, setPhone] = useState("");
@@ -47,7 +47,7 @@ export default function AddShopPage() {
         e.preventDefault();
         setError("");
 
-        // Form validation
+        // Enhanced validation
         if (!name.trim() || !description.trim() || !phone.trim() ||
             !email.trim() || !streetAddress.trim() || !city.trim() ||
             !deliveryTimeMin.trim() || !deliveryTimeMax.trim() || !deliveryFee.trim()) {
@@ -55,15 +55,36 @@ export default function AddShopPage() {
             return;
         }
 
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address");
+            return;
+        }
+
+        // Validate phone number format (Pakistani format)
+        const phoneRegex = /^\+92\s?\d{3}\s?\d{7}$/;
+        if (!phoneRegex.test(phone)) {
+            setError("Please enter a valid Pakistani phone number (+92 XXX XXXXXXX)");
+            return;
+        }
+
+        // Validate delivery times
+        const minTime = parseInt(deliveryTimeMin);
+        const maxTime = parseInt(deliveryTimeMax);
+        if (minTime >= maxTime) {
+            setError("Maximum delivery time must be greater than minimum delivery time");
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
-            // Create a shop object with the collected data
             const newShop = {
                 name,
                 description,
                 category,
-                cuisines: cuisines.split(',').map(cuisine => cuisine.trim()),
+                cuisines: category === "Restaurant" ? tags.split(',').map(cuisine => cuisine.trim()) : [],
                 contact: {
                     phone,
                     email
@@ -79,22 +100,30 @@ export default function AddShopPage() {
                 },
                 deliveryFee: parseFloat(deliveryFee),
                 freeDeliveryAbove: freeDeliveryAbove ? parseFloat(freeDeliveryAbove) : null,
-                // Generate a slug from the name
-                slug: name.toLowerCase().replace(/\s+/g, '-')
+                slug: name.toLowerCase().replace(/\s+/g, '-'),
+                image: "/no_shop.png" // Default image path
             };
 
-            // In production, you would send this to your API
-            console.log("New shop data:", newShop);
+            const response = await fetch('/api/addShop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newShop)
+            });
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to create shop');
+            }
 
             // Redirect to dashboard with success message
             router.push("/admin/dashboard?success=shop-added");
 
         } catch (error) {
             console.error("Error adding shop:", error);
-            setError("Failed to add shop. Please try again.");
+            setError(error instanceof Error ? error.message : "Failed to add shop. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -124,7 +153,7 @@ export default function AddShopPage() {
                     options: [
                         { value: "Restaurant", label: "Restaurant" },
                         { value: "Grocery", label: "Grocery Store" },
-                        { value: "Medicine", label: "Pharmacy" }
+                        { value: "Medicine", label: "Medicine" }
                     ],
                     required: true,
                 },
@@ -138,12 +167,12 @@ export default function AddShopPage() {
                     required: true,
                 },
                 {
-                    label: "Cuisines/Tags",
+                    label: "Tags",
                     type: "text",
-                    name: "cuisines",
-                    placeholder: "e.g. Pakistani, BBQ, Desi Food (comma-separated)",
-                    value: cuisines,
-                    onChange: (e) => setCuisines(e.target.value),
+                    name: "tags",
+                    placeholder: "e.g., Desi Food, Medicine, Houshold Items",
+                    value: tags,
+                    onChange: (e) => setTags(e.target.value),
                     required: category === "Restaurant",
                 },
 
@@ -198,24 +227,6 @@ export default function AddShopPage() {
 
                 // Delivery Information
                 {
-                    label: "Minimum Delivery Time (minutes)",
-                    type: "number",
-                    name: "deliveryTimeMin",
-                    placeholder: "20",
-                    value: deliveryTimeMin,
-                    onChange: (e) => setDeliveryTimeMin(e.target.value),
-                    required: true,
-                },
-                {
-                    label: "Maximum Delivery Time (minutes)",
-                    type: "number",
-                    name: "deliveryTimeMax",
-                    placeholder: "40",
-                    value: deliveryTimeMax,
-                    onChange: (e) => setDeliveryTimeMax(e.target.value),
-                    required: true,
-                },
-                {
                     label: "Delivery Fee ($)",
                     type: "number",
                     name: "deliveryFee",
@@ -225,14 +236,23 @@ export default function AddShopPage() {
                     required: true,
                 },
                 {
-                    label: "Free Delivery Above ($)",
+                    label: "Minimum Delivery Time",
                     type: "number",
-                    name: "freeDeliveryAbove",
-                    placeholder: "20.00 (leave blank if no free delivery)",
-                    value: freeDeliveryAbove,
-                    onChange: (e) => setFreeDeliveryAbove(e.target.value),
-                    required: false,
-                }
+                    name: "deliveryTimeMin",
+                    placeholder: "20",
+                    value: deliveryTimeMin,
+                    onChange: (e) => setDeliveryTimeMin(e.target.value),
+                    required: true,
+                },
+                {
+                    label: "Maximum Delivery Time",
+                    type: "number",
+                    name: "deliveryTimeMax",
+                    placeholder: "40",
+                    value: deliveryTimeMax,
+                    onChange: (e) => setDeliveryTimeMax(e.target.value),
+                    required: true,
+                },
             ]}
             buttonText={isSubmitting ? "Adding Shop..." : "Add Shop"}
             onSubmit={handleSubmit}

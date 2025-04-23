@@ -90,7 +90,7 @@ export default function FeedbackForm() {
             { value: "App", label: "App" },
             { value: "Restaurant", label: "Restaurant" },
             { value: "Grocery", label: "Grocery" },
-            { value: "Pharmacy", label: "Pharmacy" }
+            { value: "Medicine", label: "Medicine" }
           ]
         },
         // Conditionally add shop name field
