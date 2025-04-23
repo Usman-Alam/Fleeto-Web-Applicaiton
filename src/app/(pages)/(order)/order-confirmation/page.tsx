@@ -130,7 +130,7 @@ export default function OrderConfirmation() {
           </div>
           <h1 className="text-[26px] md:text-[32px] font-bold mb-2">Order Confirmed!</h1>
           <p className="text-gray-600 text-[16px] md:text-[18px]">
-            Thank you for your order. We've received your {orderDetails.paymentMethod === 'card' ? 'payment' : 'order'} and will prepare your items.
+            Thank you for your order. We&apos;ve received your {orderDetails.paymentMethod === 'card' ? 'payment' : 'order'} and will prepare your items.
           </p>
         </div>
 

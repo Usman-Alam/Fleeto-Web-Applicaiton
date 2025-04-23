@@ -24,7 +24,25 @@ export interface User {
   image?: string;
   role?: 'user' | 'admin' | 'restaurant';
   fleetoCoins?: number;
-  // Add any other user fields you need
+}
+
+// Define the login credentials type
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+// Define the register data type
+export interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+  firstname?: string;
+  lastname?: string;
+  phone?: string;
+  address?: string;
+  image?: string;
+  role?: 'user' | 'admin' | 'restaurant';
 }
 
 // Define the auth context type
@@ -90,8 +108,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [status]);
 
   // Login function
-  const login = async (userData: User) => {
+  const login = async (credentials: LoginCredentials) => {
     try {
+      // Simulate user authentication and fetch user data
+      const userData: User = {
+        id: "123", // Replace with actual user ID from backend
+        username: "exampleUser", // Replace with actual username from backend
+        email: credentials.email,
+        role: "user", // Replace with actual role from backend
+      };
+
       // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);

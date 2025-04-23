@@ -101,13 +101,13 @@ const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
                         >
                             <Image
                                 src={user?.image || "/default-avatar.png"}
-                                alt={user?.name || "User"}
+                                alt={user?.username || "User"}
                                 width={50}
                                 height={50}
                                 className="rounded-full"
                             />
                             <div>
-                                <h5 className="text-[16px] font-medium">{user?.name || "User"}</h5>
+                                <h5 className="text-[16px] font-medium">{user?.username || "User"}</h5>
                                 <p className="text-[14px] text-gray-500">{user?.email || ""}</p>
                             </div>
                         </div>
