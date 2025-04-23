@@ -25,22 +25,28 @@ export default function AdminLoginPage() {
     setIsSubmitting(true);
     
     try {
-      // In a real implementation, you'd validate against a database or API
-      if (username === "admin" && password === "admin123") {
-        // Successful login
-        await login({ 
-          id: "admin-user",
-          username: username,
-          email: "admin@fleeto.com",
-          role: "admin"
-        });
-        
-        router.push("/admin/dashboard");
-      } else {
-        setError("Invalid admin credentials");
+      const response = await fetch("/api/adminLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
       }
+
+      // Successful login
+      await login(data.data);
+      router.push("/admin/dashboard");
     } catch (error) {
-      setError("Login failed. Please try again.");
+      setError(error instanceof Error ? error.message : "Login failed. Please try again.");
       console.error("Admin login error:", error);
     } finally {
       setIsSubmitting(false);

@@ -5,14 +5,15 @@ interface FormTemplateProps {
     title: string;
     subtitle?: string;
     fields: {
-        label: string;
         type: string;
         name: string;
-        placeholder?: string;
+        label: string;
         value: string;
-        onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+        placeholder?: string;
+        onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
         required?: boolean;
         options?: { value: string; label: string }[];
+        customElement?: React.ReactNode;
     }[];
     showTerms?: boolean;
     termsValue?: boolean;
@@ -22,6 +23,7 @@ interface FormTemplateProps {
     error?: string | null;
     disabled?: boolean;
     note?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export default function FormTemplatePage({
@@ -35,7 +37,8 @@ export default function FormTemplatePage({
     onSubmit,
     error = null,
     disabled = false,
-    note
+    note,
+    children
 }: FormTemplateProps) {
     return (
         <div className="w-[var(--section-width)] flex flex-row justify-center items-center pt-[var(--page-top-padding)]">
@@ -56,6 +59,9 @@ export default function FormTemplatePage({
                             {error}
                         </div>
                     )}
+
+                    {/* Add children before fields */}
+                    {children && <div className="w-full">{children}</div>}
 
                     {fields.length > 5 ? (
                         <div className="flex flex-col md:gap-[20px] gap-[16px] w-full">
