@@ -10,8 +10,7 @@ export async function POST(req: Request) {
 
     // --------------------------------
     // Validation for User Registration
-    // --------------------------------
-    console.log("I am here");
+    // -------------------------------- 
     try {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
