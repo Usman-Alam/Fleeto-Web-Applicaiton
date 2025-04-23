@@ -23,6 +23,7 @@ export interface User {
   address?: string;
   image?: string;
   role?: 'user' | 'admin' | 'restaurant';
+  fleetoCoins?: number;
   // Add any other user fields you need
 }
 
@@ -30,13 +31,23 @@ export interface User {
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (userData: User) => Promise<void>;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
-  updateUser: (updatedUserData: Partial<User>) => Promise<void>; // Add this line
+  register: (userData: RegisterData) => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
 }
 
 // Create the auth context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAuthenticated: false,
+  loading: true,
+  login: async () => { },
+  logout: async () => { },
+  register: async () => { },
+  updateUser: async () => { },
+});
 
 // Auth provider props
 interface AuthProviderProps {
@@ -56,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         // Check localStorage or session for existing user data
         const storedUser = localStorage.getItem('user');
-        
+
         if (storedUser) {
           const userData = JSON.parse(storedUser);
           setUser(userData);
@@ -68,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(false);
       }
     };
-    
+
     checkAuth();
   }, []);
 
@@ -111,19 +122,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!user) {
         throw new Error('No user logged in');
       }
-      
+
       // Merge current user data with updates
       const updatedUser = {
         ...user,
         ...updatedUserData
       };
-      
+
       // Update localStorage
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       // Update state
       setUser(updatedUser);
-      
+
       return Promise.resolve();
     } catch (error) {
       console.error('Update user error:', error);
@@ -135,18 +146,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value = {
     user: session?.user
       ? {
-          id: session.user.id || "",
-          username: session.user.name || "",
-          email: session.user.email || "",
-          role: (["user", "admin", "restaurant"].includes(session.user.role || "") 
-            ? session.user.role 
-            : undefined) as 'user' | 'admin' | 'restaurant' | undefined,
-        }
+        id: session.user.id || "",
+        username: session.user.name || "",
+        email: session.user.email || "",
+        role: (["user", "admin", "restaurant"].includes(session.user.role || "")
+          ? session.user.role
+          : undefined) as 'user' | 'admin' | 'restaurant' | undefined,
+      }
       : user,
     isAuthenticated: !!session?.user || isAuthenticated,
+    loading: isLoading,
     login,
     logout,
-    updateUser // Add the new function to context
+    register: async () => { },
+    updateUser
   };
 
   if (isLoading) {
@@ -164,10 +177,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 // Custom hook to use auth context
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  
+
   return context;
 }

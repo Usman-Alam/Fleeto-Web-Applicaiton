@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
 import { CartProvider } from "@contexts/CartContext";
-import Navbar from "@components/NavBar";
+import Navbar from "@components/NavBar/NavBar";
 import SessionProvider from "@providers/SessionProvider";
 import { AuthProvider } from "@contexts/AuthContext";
-import Footer from "@/components/Footer";
+import Footer from "@components/Footer";
 
 // For variable font
 const inter = localFont({

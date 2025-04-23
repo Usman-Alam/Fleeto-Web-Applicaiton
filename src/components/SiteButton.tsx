@@ -24,24 +24,19 @@ export default function SiteButton({
     disabled = false,
     icon
 }: ButtonProps) {
-    // Base styles that apply to both button types
     const baseStyles = 
         "flex flex-row justify-center items-center gap-2 p-[8px_12px] lg:p-[10px_16px] h-auto rounded-[8px] font-medium text-[20px] border transition-colors duration-200";
 
-    // Variant specific styles with hover effects that swap appearances
     const variantStyles = {
         filled: "bg-[var(--accent)] text-[var(--white)] border-[var(--accent)] hover:bg-transparent hover:text-[var(--accent)]",
         outlined: "bg-transparent text-[var(--accent)] border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--white)]",
     };
 
-    // Additional utility styles
     const widthStyle = fullWidth ? "w-full" : "w-auto";
     const disabledClass = disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer";
     
-    // Combined styles
     const combinedStyles = `${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`;
 
-    // Render as link or button based on presence of href
     if (href) {
         return (
             <Link href={href} className={combinedStyles} onClick={onClick as any}>
