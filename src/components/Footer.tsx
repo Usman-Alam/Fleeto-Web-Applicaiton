@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
                     <div className="flex flex-col gap-4">
                         <Logo />
                         <p className="text-[var(--body)] text-sm">
-                            Your one-stop delivery platform for food, groceries, and medicine on campus.
+                            Your one-stop delivery platform for food, groceries, and Pharmacy on campus.
                             Order from your favorite shops and enjoy fast delivery, exclusive deals, and more.
                         </p>
                         <div className="flex gap-4 mt-2">

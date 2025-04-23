@@ -31,7 +31,7 @@ export default function HomeHero() {
                         Welcome to <span className="text-[var(--accent)]">Fleeto</span>
                     </h1>
                     <p>
-                        Your one-stop platform for food, grocery, and medicine. Order from your favorite campus vendors, track deliveries in real time, and enjoy exclusive student deals - All in one place!
+                        Your one-stop platform for food, grocery, and Pharmacy. Order from your favorite campus vendors, track deliveries in real time, and enjoy exclusive student deals - All in one place!
                     </p>
                 </div>
                 <SiteButton

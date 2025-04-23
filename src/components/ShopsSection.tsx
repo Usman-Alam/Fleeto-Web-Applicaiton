@@ -102,7 +102,7 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
                                                 />
                                             </div>
                                             <p>
-                                                <span>{item.deliveryTime}</span> - <span>{Math.floor(5 + Number(item.deliveryTime))}</span> mins
+                                                <span>{item.deliveryTime}</span> {"mins"}
                                             </p>
                                         </div>
                                         <div className="flex flex-row items-center gap-[4px]">

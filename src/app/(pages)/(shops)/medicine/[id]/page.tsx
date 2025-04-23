@@ -6,7 +6,7 @@ import Image from "next/image";
 import SiteButton from "@components/SiteButton";
 import { useCart } from "@contexts/CartContext";
 
-interface MedicineData {
+interface PharmacyData {
   id: string;
   name: string;
   description: string;
@@ -14,10 +14,10 @@ interface MedicineData {
   rating: number;
   deliveryTime: string;
   deliveryFee: string;
-  items: MedicineItem[];
+  items: PharmacyItem[];
 }
 
-interface MedicineItem {
+interface PharmacyItem {
   id: string;
   name: string;
   description: string;
@@ -25,20 +25,20 @@ interface MedicineItem {
   image: string;
 }
 
-export default function MedicinePage() {
+export default function PharmacyPage() {
   const { id } = useParams() as { id: string };
-  const [medicine, setMedicine] = useState<MedicineData | null>(null);
+  const [Pharmacy, setPharmacy] = useState<PharmacyData | null>(null);
   const { addToCart } = useCart();
 
-  // Simulate fetching medicine data
+  // Simulate fetching Pharmacy data
   useEffect(() => {
     // Replace this with an actual API call
-    const fetchMedicineData = async () => {
-      const mockData: MedicineData = {
+    const fetchPharmacyData = async () => {
+      const mockData: PharmacyData = {
         id,
         name: "Pakistan Pharmacy",
         description:
-          "Providing a wide range of medicines, healthcare products, and personal care items.",
+          "Providing a wide range of Pharmacys, healthcare products, and personal care items.",
         image: "/shops/pakistan_pharma.jpg",
         rating: 4.8,
         deliveryTime: "20-30 mins",
@@ -67,14 +67,14 @@ export default function MedicinePage() {
           },
         ],
       };
-      setMedicine(mockData);
+      setPharmacy(mockData);
     };
 
-    if (id) fetchMedicineData();
+    if (id) fetchPharmacyData();
   }, [id]);
 
   // Function to handle adding an item to the cart
-  const handleAddToCart = (item: MedicineItem) => {
+  const handleAddToCart = (item: PharmacyItem) => {
     // Convert the string price to a number by removing the $ sign
     const numericPrice = parseFloat(item.price.replace('$', ''));
     
@@ -86,23 +86,23 @@ export default function MedicinePage() {
     });
   };
 
-  if (!medicine) {
+  if (!Pharmacy) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Medicine Banner */}
+      {/* Pharmacy Banner */}
       <div className="relative w-full h-[300px]">
         <Image
-          src={medicine.image}
-          alt={medicine.name}
+          src={Pharmacy.image}
+          alt={Pharmacy.name}
           fill
           className="object-cover"
         />
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 text-white">
-        <h1><span className="text-[var(--white)]">{medicine.name}</span></h1>
-          <p className="text-[16px]">{medicine.description}</p>
+        <h1><span className="text-[var(--white)]">{Pharmacy.name}</span></h1>
+          <p className="text-[16px]">{Pharmacy.description}</p>
           <div className="flex flex-row items-center gap-[10px] mt-[10px]">
             <div className="flex items-center gap-[5px]">
               <Image
@@ -112,21 +112,21 @@ export default function MedicinePage() {
                 height={16}
                 className="object-contain"
               />
-              <span>{medicine.rating}</span>
+              <span>{Pharmacy.rating}</span>
             </div>
             <span>•</span>
-            <span>{medicine.deliveryTime}</span>
+            <span>{Pharmacy.deliveryTime}</span>
             <span>•</span>
-            <span>{medicine.deliveryFee}</span>
+            <span>{Pharmacy.deliveryFee}</span>
           </div>
         </div>
       </div>
 
-      {/* Medicine Items Section */}
+      {/* Pharmacy Items Section */}
       <div className="w-[var(--section-width)] mt-[20px] flex flex-col gap-[20px]">
-        <h2 className="text-[20px] font-bold">Available Medicines</h2>
+        <h2 className="text-[20px] font-bold">Available Pharmacys</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-          {medicine.items.map((item) => (
+          {Pharmacy.items.map((item) => (
             <div
               key={item.id}
               className="flex flex-col items-stretch gap-[10px] bg-[var(--bg2)] rounded-[16px] p-[16px]"
