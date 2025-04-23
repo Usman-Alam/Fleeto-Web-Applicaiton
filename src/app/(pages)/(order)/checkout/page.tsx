@@ -1,53 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@contexts/CartContext";
-import SiteButton from "@components/SiteButton";
+import { useAuth } from "@contexts/AuthContext";
+import OrderSummary from "@components/Checkout/OrderSummary";
+import FleetoCoinsSection from "@components/Checkout/FleetoCoinsSection";
+import DeliveryMethod from "@components/Checkout/DeliveryMethod";
+import DormDropToggle from "@components/Checkout/DormDropToggle";
+import DormInformation from "@components/Checkout/DormInformation";
+import DeliveryAddress from "@components/Checkout/DeliveryAddress";
+import PaymentMethod from "@components/Checkout/PaymentMethod";
+import OrderTotal from "@components/Checkout/OrderTotal";
 
-// Remove dormDrop from delivery method options
 type DeliveryMethod = "standard" | "express";
 type PaymentMethod = "card" | "cash";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth();
+
+  // States
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("standard");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
   const [address, setAddress] = useState("");
-
-  // Add new state for dorm information
   const [hostelName, setHostelName] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
-  // Add a separate toggle for DormDrop
   const [isDormDrop, setIsDormDrop] = useState(false);
-
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [availableCoins, setAvailableCoins] = useState(user?.fleetoCoins || 0);
+  const [coinsToUse, setCoinsToUse] = useState(0);
 
-  // Calculate subtotal
+  // Calculate values
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-
-  // Calculate base delivery fee based on delivery method
   const baseDeliveryFee = deliveryMethod === "standard" ? 1.99 : 4.99;
-  
-  // Calculate extra fee for DormDrop if enabled
   const dormDropFee = isDormDrop ? 0.99 : 0;
-  
-  // Total delivery fee combines both
   const deliveryFee = baseDeliveryFee + dormDropFee;
-
-  // Calculate tax (assuming 5% tax rate)
   const tax = subtotal * 0.05;
+  const coinDiscount = (coinsToUse / 20);
+  const projectedCoinsToEarn = Math.floor(subtotal / 20);
+  const total = Math.max(0, subtotal + deliveryFee + tax - coinDiscount);
 
-  // Calculate total
-  const total = subtotal + deliveryFee + tax;
+  // Maximum usable coins
+  const maxUsableCoins = Math.min(
+    availableCoins,
+    Math.floor((subtotal + deliveryFee) * 20) // Can't use coins to pay tax
+  );
 
-  // Validate form fields
+  // Form validation
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
@@ -55,12 +60,10 @@ export default function CheckoutPage() {
       newErrors.cart = "Your cart is empty";
     }
 
-    // Always validate address unless using DormDrop
     if (!isDormDrop && !address.trim()) {
       newErrors.address = "Delivery address is required";
     }
 
-    // Validate dorm information when DormDrop is selected
     if (isDormDrop) {
       // Hostel name validation
       if (!hostelName.trim()) {
@@ -68,13 +71,13 @@ export default function CheckoutPage() {
       } else {
         const hostelPattern = /^([MF])([1-9])$/;
         const match = hostelName.trim().match(hostelPattern);
-        
+
         if (!match) {
           newErrors.hostelName = "Hostel name must be in format M1-M7 or F1-F6";
         } else {
-          const building = match[1]; // M or F
+          const building = match[1];
           const number = parseInt(match[2]);
-          
+
           if (building === 'M' && (number < 1 || number > 7)) {
             newErrors.hostelName = "M hostels range from M1 to M7";
           } else if (building === 'F' && (number < 1 || number > 6)) {
@@ -82,7 +85,7 @@ export default function CheckoutPage() {
           }
         }
       }
-      
+
       // Room number validation
       if (!roomNumber.trim()) {
         newErrors.roomNumber = "Room number is required";
@@ -90,59 +93,59 @@ export default function CheckoutPage() {
         newErrors.roomNumber = "Room number must be exactly 3 digits";
       }
     }
-    
+
+    // Coin validation
+    if (coinsToUse > availableCoins) {
+      newErrors.coins = "You don't have enough FleetoCoins";
+    }
+
+    if (coinsToUse % 20 !== 0) {
+      newErrors.coins = "FleetoCoins must be used in multiples of 20";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Order placement
   const handlePlaceOrder = async () => {
     if (!validateForm()) return;
-
     setIsPlacingOrder(true);
 
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Create order details to pass to confirmation page
       const orderDetails = {
         orderNumber: `FLT-${Math.floor(100000 + Math.random() * 900000)}`,
         orderDate: new Date().toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
+          year: 'numeric', month: 'long', day: 'numeric',
+          hour: '2-digit', minute: '2-digit'
         }),
-        deliveryAddress: isDormDrop
-          ? `Room ${roomNumber}, ${hostelName} Hostel`
-          : address,
-        estimatedDeliveryTime: 
-          deliveryMethod === "standard" ? "30-45 minutes" : "15-20 minutes",
+        deliveryAddress: isDormDrop ? `Room ${roomNumber}, ${hostelName} Hostel` : address,
+        estimatedDeliveryTime: deliveryMethod === "standard" ? "30-45 minutes" : "15-20 minutes",
         deliveryMethod: `${deliveryMethod}${isDormDrop ? " with DormDrop" : ""}`,
         dormDrop: isDormDrop,
         items: cartItems,
-        paymentMethod: paymentMethod,
-        subtotal: subtotal,
-        deliveryFee: deliveryFee,
-        baseDeliveryFee: baseDeliveryFee,
-        dormDropFee: dormDropFee,
-        tax: tax,
-        total: total
+        paymentMethod,
+        subtotal,
+        deliveryFee,
+        baseDeliveryFee,
+        dormDropFee,
+        tax,
+        coinsUsed: coinsToUse,
+        coinDiscount,
+        coinsEarned: projectedCoinsToEarn,
+        total
       };
 
-      // Encode the order details as a URL parameter
       const encodedOrderDetails = encodeURIComponent(JSON.stringify(orderDetails));
 
-      // Check payment method and redirect accordingly
       if (paymentMethod === "card") {
-        // For credit/debit card, redirect to payment page
         router.push(`/payment?amount=${total.toFixed(2)}&orderDetails=${encodedOrderDetails}`);
       } else {
-        // For cash on delivery, redirect directly to order confirmation
         router.push(`/order-confirmation?orderDetails=${encodedOrderDetails}`);
       }
-
     } catch (error) {
       setErrors({ submit: "Failed to place order. Please try again." });
     } finally {
@@ -158,320 +161,81 @@ export default function CheckoutPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left column */}
           <div className="flex-1">
-            {/* Order Summary section */}
-            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <h2 className="text-[20px] font-bold mb-4">Order Summary</h2>
-              
-              {cartItems.length === 0 ? (
-                <div className="text-center py-6">
-                  <p className="text-gray-500 mb-4">Your cart is empty</p>
-                  <SiteButton 
-                    text="Browse Shops" 
-                    variant="outlined" 
-                    onClick={() => router.push("/")}
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 pb-4 border-b border-gray-100">
-                      <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-100 relative">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="font-medium">{item.name}</div>
-                        <div className="text-sm text-gray-500">${item.price.toFixed(2)}</div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <button 
-                          className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center"
-                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                        >
-                          <span>-</span>
-                        </button>
-                        
-                        <span className="w-6 text-center">{item.quantity}</span>
-                        
-                        <button 
-                          className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <span>+</span>
-                        </button>
-                      </div>
-                      
-                      <div className="font-medium w-20 text-right">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </div>
-                      
-                      <button 
-                        className="text-gray-400 hover:text-red-500"
-                        onClick={() => updateQuantity(item.id, 0)}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3 6h18"></path>
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Order Summary */}
+            <OrderSummary
+              cartItems={cartItems}
+              updateQuantity={updateQuantity}
+              router={router}
+            />
 
-            {/* Delivery Method - now separate from DormDrop */}
-            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <h2 className="text-[20px] font-bold mb-4">Delivery Method</h2>
+            {/* FleetoCoins Section */}
+            <FleetoCoinsSection
+              availableCoins={availableCoins}
+              coinsToUse={coinsToUse}
+              setCoinsToUse={setCoinsToUse}
+              maxUsableCoins={maxUsableCoins}
+              coinDiscount={coinDiscount}
+              projectedCoinsToEarn={projectedCoinsToEarn}
+              errors={errors.coins}
+            />
 
-              <div className="flex flex-col gap-3">
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="deliveryMethod"
-                    checked={deliveryMethod === "standard"}
-                    onChange={() => setDeliveryMethod("standard")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Standard Delivery</div>
-                    <div className="text-sm text-gray-500">Estimated delivery: 30-45 minutes</div>
-                  </div>
-                  <div className="font-medium">$1.99</div>
-                </label>
+            {/* Delivery Method */}
+            <DeliveryMethod
+              deliveryMethod={deliveryMethod}
+              setDeliveryMethod={setDeliveryMethod}
+            />
 
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="deliveryMethod"
-                    checked={deliveryMethod === "express"}
-                    onChange={() => setDeliveryMethod("express")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Express Delivery</div>
-                    <div className="text-sm text-gray-500">Estimated delivery: 15-20 minutes</div>
-                  </div>
-                  <div className="font-medium">$4.99</div>
-                </label>
-              </div>
-            </div>
-            
-            {/* DormDrop Toggle - New section */}
-            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-[20px] font-bold">Dorm Drop Service</h2>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={isDormDrop}
-                    onChange={(e) => setIsDormDrop(e.target.checked)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accent)]"></div>
-                </label>
-              </div>
-              
-              <div className="bg-gray-50 p-3 rounded-md mb-4">
-                <div className="font-medium">Campus Delivery to Your Dorm</div>
-                <div className="text-sm text-gray-500 mt-1">
-                  Our delivery person will bring your order directly to your dorm room.
-                </div>
-                <div className="text-sm font-medium mt-2 text-[var(--accent)]">
-                  Additional fee: $0.99
-                </div>
-              </div>
-            </div>
+            {/* DormDrop Toggle */}
+            <DormDropToggle
+              isDormDrop={isDormDrop}
+              setIsDormDrop={setIsDormDrop}
+            />
 
-            {/* Dorm Information - Only shown when DormDrop is selected */}
-            {isDormDrop && (
-              <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-                <h2 className="text-[20px] font-bold mb-4">Dorm Information</h2>
-
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <label htmlFor="hostelName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Hostel Name
-                    </label>
-                    <input
-                      type="text"
-                      id="hostelName"
-                      placeholder="e.g. M1, F3"
-                      value={hostelName}
-                      onChange={(e) => setHostelName(e.target.value.toUpperCase())}
-                      className={`w-full p-3 border rounded-lg ${errors.hostelName ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Valid formats: M1-M7 for male hostels, F1-F6 for female hostels
-                    </p>
-                    {errors.hostelName && (
-                      <p className="text-red-500 text-sm mt-1">{errors.hostelName}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="roomNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                      Room Number
-                    </label>
-                    <input
-                      type="text"
-                      id="roomNumber"
-                      placeholder="e.g. 101, 305"
-                      value={roomNumber}
-                      onChange={(e) => {
-                        // Only allow digits
-                        const value = e.target.value.replace(/\D/g, '');
-                        // Limit to 3 digits
-                        setRoomNumber(value.slice(0, 3));
-                      }}
-                      maxLength={3}
-                      className={`w-full p-3 border rounded-lg ${errors.roomNumber ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Room number must be exactly 3 digits
-                    </p>
-                    {errors.roomNumber && (
-                      <p className="text-red-500 text-sm mt-1">{errors.roomNumber}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Other delivery address form - only shown when NOT using DormDrop */}
-            {!isDormDrop && (
-              <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-                <h2 className="text-[20px] font-bold mb-4">Delivery Address</h2>
-
-                <div>
-                  <textarea
-                    placeholder="Enter your delivery address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    rows={3}
-                    className={`w-full p-3 border rounded-lg ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
-                  />
-                  {errors.address && (
-                    <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                  )}
-                </div>
-              </div>
+            {/* Dorm Information or Delivery Address */}
+            {isDormDrop ? (
+              <DormInformation
+                hostelName={hostelName}
+                setHostelName={setHostelName}
+                roomNumber={roomNumber}
+                setRoomNumber={setRoomNumber}
+                errors={{
+                  hostelName: errors.hostelName,
+                  roomNumber: errors.roomNumber
+                }}
+              />
+            ) : (
+              <DeliveryAddress
+                address={address}
+                setAddress={setAddress}
+                error={errors.address}
+              />
             )}
           </div>
 
-          {/* Right column - Payment and Order Total */}
+          {/* Right column */}
           <div className="flex-1">
-            {/* Payment Method section */}
-            <div className="bg-white rounded-[16px] p-6 mb-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <h2 className="text-[20px] font-bold mb-4">Payment Method</h2>
-              
-              <div className="flex flex-col gap-3">
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod("card")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Credit/Debit Card</div>
-                    <div className="text-sm text-gray-500">Pay securely with your card</div>
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="w-10 h-6 bg-blue-600 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">VISA</span>
-                    </div>
-                    <div className="w-10 h-6 bg-red-500 rounded flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">MC</span>
-                    </div>
-                  </div>
-                </label>
-                
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer bg-white">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    checked={paymentMethod === "cash"}
-                    onChange={() => setPaymentMethod("cash")}
-                    className="mr-3"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Cash on Delivery</div>
-                    <div className="text-sm text-gray-500">Pay when your order arrives</div>
-                  </div>
-                  <div className="w-6 h-6 text-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </label>
-              </div>
-            </div>
-            
-            {/* Order Total - remains the same */}
-            <div className="bg-white rounded-[16px] p-6" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
-              <h2 className="text-[20px] font-bold mb-4">Order Total</h2>
+            {/* Payment Method */}
+            <PaymentMethod
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+            />
 
-              <div className="flex flex-col gap-2 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
-                </div>
-                
-                {/* Base delivery fee */}
-                <div className="flex justify-between">
-                  <span className="text-gray-600">
-                    {deliveryMethod === "standard" ? "Standard Delivery" : "Express Delivery"}
-                  </span>
-                  <span>${baseDeliveryFee.toFixed(2)}</span>
-                </div>
-                
-                {/* DormDrop fee if applicable */}
-                {isDormDrop && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Dorm Drop Service</span>
-                    <span>${dormDropFee.toFixed(2)}</span>
-                  </div>
-                )}
-                
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span>${tax.toFixed(2)}</span>
-                </div>
-                <div className="h-px bg-gray-200 my-2"></div>
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
-                </div>
-              </div>
-
-              {errors.submit && (
-                <p className="text-red-500 text-sm mb-4">{errors.submit}</p>
-              )}
-
-              <SiteButton
-                text={isPlacingOrder ? "Processing..." : "Place Order"}
-                variant="filled"
-                fullWidth
-                onClick={handlePlaceOrder}
-                disabled={isPlacingOrder}
-              />
-
-              <button
-                className="w-full text-center mt-3 text-[var(--accent)] hover:underline"
-                onClick={() => router.push("/")}
-              >
-                Continue Shopping
-              </button>
-            </div>
+            {/* Order Total */}
+            <OrderTotal
+              subtotal={subtotal}
+              deliveryMethod={deliveryMethod}
+              baseDeliveryFee={baseDeliveryFee}
+              isDormDrop={isDormDrop}
+              dormDropFee={dormDropFee}
+              tax={tax}
+              coinsToUse={coinsToUse}
+              coinDiscount={coinDiscount}
+              total={total}
+              isPlacingOrder={isPlacingOrder}
+              error={errors.submit}
+              onPlaceOrder={handlePlaceOrder}
+              onContinueShopping={() => router.push("/")}
+            />
           </div>
         </div>
       </div>

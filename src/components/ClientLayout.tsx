@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@components/NavBar";
+import Navbar from "@/components/NavBar/NavBar";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<null | { imageSrc: string; name: string; email: string }>(null);
