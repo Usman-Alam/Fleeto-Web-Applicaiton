@@ -113,17 +113,43 @@ export default function AdminDashboard() {
         setFaqs(faqs.filter(faq => faq.id !== id));
     };
 
-    const handleAddFaq = () => {
+    const handleAddFaq = async () => {
         if (newFaq.question.trim() && newFaq.answer.trim()) {
-            setFaqs([
-                ...faqs,
-                {
-                    id: `faq${Date.now()}`,
-                    question: newFaq.question,
-                    answer: newFaq.answer
+            try {
+                const response = await fetch('/api/faqs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: newFaq.question,
+                        answer: newFaq.answer
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to save FAQ');
                 }
-            ]);
-            setNewFaq({ question: "", answer: "" });
+
+                // Add the new FAQ to the local state
+                setFaqs([
+                    ...faqs,
+                    {
+                        id: data.data._id,
+                        question: newFaq.question,
+                        answer: newFaq.answer
+                    }
+                ]);
+
+                // Clear the form
+                setNewFaq({ question: "", answer: "" });
+                
+            } catch (error) {
+                console.error('Error saving FAQ:', error);
+                alert('Failed to save FAQ. Please try again.');
+            }
         }
     };
 
