@@ -1,10 +1,31 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { MapPin, Phone, Mail, Instagram, Twitter, Facebook } from 'lucide-react';
 import Logo from './Logo';
 
 const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
+    const pathname = usePathname();
+    const router = useRouter();
+
+    // Function to handle FAQs link click
+    const handleFaqsClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        if (pathname === "/") {
+            // If already on homepage, scroll to FAQs section
+            const faqsElement = document.getElementById("faqs");
+            if (faqsElement) {
+                faqsElement.scrollIntoView({ behavior: "smooth" });
+            }
+        } else {
+            // If on another page, navigate to homepage FAQs section
+            router.push("/#faqs");
+        }
+    };
 
     return (
         <footer className="bg-[var(--bg2)] w-full mt-[var(--section-top-padding)] flex flex-col items-center justify-center">
@@ -36,28 +57,17 @@ const Footer: React.FC = () => {
                         <h5 className="font-semibold mb-4">Useful Links</h5>
                         <ul className="flex flex-col gap-2">
                             <li>
-                                <Link href="/about" className="text-[var(--body)] hover:text-[var(--accent)]">
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/careers" className="text-[var(--body)] hover:text-[var(--accent)]">
-                                    Careers
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/join-us" className="text-[var(--body)] hover:text-[var(--accent)]">
-                                    Join Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/faq" className="text-[var(--body)] hover:text-[var(--accent)]">
+                                <a
+                                    href="/#faqs"
+                                    className="text-[var(--body)] hover:text-[var(--accent)]"
+                                    onClick={handleFaqsClick}
+                                >
                                     FAQs
-                                </Link>
+                                </a>
                             </li>
                             <li>
-                                <Link href="/blog" className="text-[var(--body)] hover:text-[var(--accent)]">
-                                    Blog
+                                <Link href="/shop/signup" className="text-[var(--body)] hover:text-[var(--accent)]">
+                                    Join Us
                                 </Link>
                             </li>
                         </ul>

@@ -157,11 +157,11 @@ export default function Home() {
         />
       )}
 
-      {/* Shop Owner Benefits Section - Added before FAQs */}
-      <BecomeAPartnerSection />
-
       <div id="faqs"></div>
       <FAQsSection />
+
+      {/* Shop Owner Benefits Section - Added before FAQs */}
+      <BecomeAPartnerSection />
     </div>
   );
 }
