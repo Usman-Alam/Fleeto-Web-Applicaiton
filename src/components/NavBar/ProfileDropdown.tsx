@@ -39,6 +39,11 @@ const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
                         >
                             <h5 className="text-[16px] font-medium flex items-center">
                                 {user?.username || "User"}
+                                {user?.isPro && (
+                                    <span className="ml-2 px-2 py-0.5 text-[10px] bg-gradient-to-r from-[#F1C40F] to-[#D4AC0D] text-white rounded-full font-bold">
+                                        PRO
+                                    </span>
+                                )}
                                 <span className="ml-1 text-lg text-[var(--accent)]">↗</span>
                             </h5>
                             <p className="text-[14px] text-gray-500">{user?.email || ""}</p>
@@ -83,7 +88,7 @@ const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
 
                         <SiteButton
                             text="Logout"
-                            variant="outlined"
+                            variant="filled"
                             onClick={async () => {
                                 setIsOpen(false);
                                 await logout();

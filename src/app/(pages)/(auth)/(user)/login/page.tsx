@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link"; // Add this import
 import FormTemplatePage from "@components/FormTemplatePage";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -61,6 +62,14 @@ export default function Login() {
       buttonText="Log in"
       onSubmit={handleSubmit}
       error={error}
+      note={
+        <p className="text-center mt-4">
+          Are you a shop owner?{" "}
+          <Link href="/shop/login" className="font-medium text-[var(--accent)] hover:text-[var(--accent-hover)]">
+            Shop Login?
+          </Link>
+        </p>
+      }
     />
   );
 }
