@@ -67,10 +67,10 @@ const FAQsSection: React.FC = () => {
 
   return (
     <section className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[var(--page-top-padding)] px-4 md:px-8 lg:px-0">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-top gap-8">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 text-[var(--heading)]">Frequently Asked Questions</h2>
         
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
           {faqs.map((faq, index) => (
             <FAQ
               key={faq._id}

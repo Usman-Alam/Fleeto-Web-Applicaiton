@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import HomeHero from "@components/HomeHero";
 import ShopsSection from "@components/ShopsSection";
 import FAQsSection from "@components/FAQsSection";
+import BecomeAPartnerSection from "@components/BecomeAPartnerSection";
 
 interface SectionState {
   data: any[];
@@ -155,6 +156,9 @@ export default function Home() {
           data={sections.grocery.data}
         />
       )}
+
+      {/* Shop Owner Benefits Section - Added before FAQs */}
+      <BecomeAPartnerSection />
 
       <div id="faqs"></div>
       <FAQsSection />
