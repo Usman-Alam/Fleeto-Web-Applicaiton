@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@components/Logo";
 import { useCart } from "@contexts/CartContext";
-import { useAuth } from "@contexts/AuthContext";
 import SiteButton from "@components/SiteButton";
 import DesktopNav from "@components/NavBar/DesktopNav";
 import CartDropdown from "@components/NavBar/CartDropdown";
@@ -18,8 +17,9 @@ export default function Navbar() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isDesktopCartOpen, setIsDesktopCartOpen] = useState(false);
     const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
 
-    const { user, isAuthenticated, logout } = useAuth();
     const { cartItems } = useCart();
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,47 @@ export default function Navbar() {
     const pathname = usePathname();
 
     const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem('token');
+            const email = localStorage.getItem('email');
+            const name = localStorage.getItem('name');
+            const isPro = localStorage.getItem('isPro') === 'true';
+            const coins = Number(localStorage.getItem('coins')) || 0;
+
+            setIsAuthenticated(!!token);
+            if (token && email && name) {
+                setUser({
+                    email,
+                    name,
+                    isPro,
+                    coins
+                });
+            } else {
+                setUser(null);
+            }
+        };
+
+        checkAuth();
+
+        window.addEventListener('storage', checkAuth);
+        return () => window.removeEventListener('storage', checkAuth);
+    }, []);
+
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        localStorage.removeItem('name');
+        localStorage.removeItem('isPro');
+        localStorage.removeItem('coins');
+        localStorage.removeItem('hasSubscription');
+
+        setIsAuthenticated(false);
+        setUser(null);
+
+        router.push('/');
+    };
 
     useEffect(() => {
         function handleScroll() {
@@ -113,6 +154,7 @@ export default function Navbar() {
                                 logout={logout}
                                 router={router}
                                 ref={profileRef}
+                                user={user}
                             />
                         )}
                     </div>

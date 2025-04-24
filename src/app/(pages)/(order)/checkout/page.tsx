@@ -30,7 +30,7 @@ export default function CheckoutPage() {
   const [isDormDrop, setIsDormDrop] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [availableCoins, setAvailableCoins] = useState(user?.fleetoCoins || 0);
+  const [availableCoins, setAvailableCoins] = useState(Number(localStorage.getItem('coins')) || 0);
   const [coinsToUse, setCoinsToUse] = useState(0);
 
   // Calculate values
@@ -42,9 +42,11 @@ export default function CheckoutPage() {
   const dormDropFee = isDormDrop ? 0.99 : 0;
   const deliveryFee = baseDeliveryFee + dormDropFee;
   const tax = subtotal * 0.05;
-  const coinDiscount = (coinsToUse / 20);
+  const coinDiscount = Math.min((coinsToUse / 10), subtotal); // 10 coins = $1, capped at subtotal
   const projectedCoinsToEarn = Math.floor(subtotal / 20);
-  const total = Math.max(0, subtotal + deliveryFee + tax - coinDiscount);
+  const isPro = localStorage.getItem('isPro') === 'true';
+  const proDiscount = isPro ? (subtotal * 0.10) : 0; // 10% discount on subtotal
+  const total = Math.max(0, subtotal + deliveryFee + tax - coinDiscount - proDiscount);
 
   // Maximum usable coins
   const maxUsableCoins = Math.min(
@@ -103,8 +105,47 @@ export default function CheckoutPage() {
       newErrors.coins = "FleetoCoins must be used in multiples of 20";
     }
 
+    if (coinsToUse > subtotal * 10) {
+      newErrors.coins = "Coin discount cannot exceed order subtotal";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Update user coins
+  const updateUserCoins = async () => {
+    if (coinsToUse === 0) return;
+
+    try {
+      const email = localStorage.getItem('email');
+      if (!email) throw new Error("User email not found");
+
+      const response = await fetch('/api/deductCoins', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          coinsToDeduct: coinsToUse
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update coins');
+      }
+
+      // Update local storage with new balance
+      localStorage.setItem('coins', String(data.newCoinsBalance));
+      setAvailableCoins(data.newCoinsBalance);
+
+    } catch (error) {
+      console.error('Error updating coins:', error);
+      setErrors({ ...errors, coins: 'Failed to update coins balance' });
+    }
   };
 
   // Order placement
@@ -113,6 +154,9 @@ export default function CheckoutPage() {
     setIsPlacingOrder(true);
 
     try {
+      // Update coins first
+      await updateUserCoins();
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -136,7 +180,9 @@ export default function CheckoutPage() {
         coinsUsed: coinsToUse,
         coinDiscount,
         coinsEarned: projectedCoinsToEarn,
-        total
+        isPro,
+        proDiscount,
+        total // This will now include the Pro discount
       };
 
       const encodedOrderDetails = encodeURIComponent(JSON.stringify(orderDetails));
@@ -213,7 +259,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right column */}
-          <div className="flex-1">
+          <div className="flex-1"> 
             {/* Payment Method */}
             <PaymentMethod
               paymentMethod={paymentMethod}
@@ -230,6 +276,8 @@ export default function CheckoutPage() {
               tax={tax}
               coinsToUse={coinsToUse}
               coinDiscount={coinDiscount}
+              isPro={isPro}
+              proDiscount={proDiscount}
               total={total}
               isPlacingOrder={isPlacingOrder}
               error={errors.submit}

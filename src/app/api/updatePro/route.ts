@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/server/server";
+import connectDB from "../../../../server/server";
 import User from "@/models/user";
 
 export async function POST(req: Request) {
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
             { email },
             { 
                 isPro: true,
-                proActivationDate: new Date(),
-                proExpiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+                // proActivationDate: new Date(),
+                // proExpiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
             },
             { new: true }
         );

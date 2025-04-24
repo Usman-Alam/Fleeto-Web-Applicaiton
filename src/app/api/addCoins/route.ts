@@ -1,27 +1,24 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/server/server";
+import connectDB from "../../../../server/server";
 import User from "@/models/user";
 
 export async function POST(req: Request) {
     try {
         await connectDB();
-        const { email } = await req.json();
+        const { email, coinsToAdd } = await req.json();
 
-        if (!email) {
+        if (!email || typeof coinsToAdd !== 'number') {
             return NextResponse.json(
-                { error: "Email is required" },
+                { error: "Invalid input" },
                 { status: 400 }
             );
         }
 
+        // Find and update user's coins
         const user = await User.findOneAndUpdate(
             { email },
-            { 
-                isPro: true,
-                proActivationDate: new Date(),
-                proExpiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-            },
-            { new: true }
+            { $inc: { coins: coinsToAdd } }, // Increment coins by coinsToAdd
+            { new: true } // Return updated document
         );
 
         if (!user) {
@@ -33,13 +30,13 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             success: true,
-            message: "Pro status updated successfully"
+            newCoinsBalance: user.coins
         });
 
     } catch (error) {
-        console.error("Error updating pro status:", error);
+        console.error("Error updating coins:", error);
         return NextResponse.json(
-            { error: "Failed to update pro status" },
+            { error: "Failed to update coins" },
             { status: 500 }
         );
     }

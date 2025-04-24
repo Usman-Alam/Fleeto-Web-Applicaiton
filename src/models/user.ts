@@ -36,6 +36,15 @@ const UserSchema = new mongoose.Schema({
   stripeCustomerId: {
     type: String,
     default: null
+  },
+  // New fields added
+  coins: {
+    type: Number,
+    default: 0
+  },
+  hasSubscription: {
+    type: Boolean,
+    default: false
   }
 }, { collection: 'users' });
 

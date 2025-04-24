@@ -11,7 +11,7 @@ interface OrderTotalProps {
     coinsToUse: number;
     coinDiscount: number;
     isPro: boolean;
-    proDiscount: number;
+    proDiscount: number; 
     total: number;
     isPlacingOrder: boolean;
     error?: string;

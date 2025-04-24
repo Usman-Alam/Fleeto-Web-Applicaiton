@@ -8,7 +8,9 @@ import SiteButton from "@components/SiteButton";
 
 export default function FleetoProPaymentPage() {
     const router = useRouter();
-    const { user } = useAuth();
+    // const { user } = useAuth();
+    const user = localStorage.getItem('name');
+    const email = localStorage.getItem('email');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const [testSuccess, setTestSuccess] = useState(false);
@@ -46,7 +48,7 @@ export default function FleetoProPaymentPage() {
                 console.log("User data:", user); // Add this to debug
 
                 // Check if user data exists and has necessary fields
-                if (!user || !user.email) {
+                if (!user || !email) {
                     throw new Error("User information incomplete. Please try logging in again.");
                 }
 
@@ -57,9 +59,9 @@ export default function FleetoProPaymentPage() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        userId: user.id,
-                        userEmail: user.email,
-                        userName: user.username
+                        userId: "12",
+                        userEmail: email,
+                        userName: user
                     }),
                 });
 
@@ -73,8 +75,30 @@ export default function FleetoProPaymentPage() {
 
                 if (data.url) {
                     console.log("Redirecting to:", data.url);
-                    // Redirect to Stripe checkout
-                    window.location.href = data.url;
+                    
+                    try {
+                        // First update the pro status
+                        const updateResponse = await fetch('/api/updatePro', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ email }),
+                        });
+
+                        if (!updateResponse.ok) {
+                            throw new Error('Failed to update pro status');
+                        }
+
+                        // If update successful, update localStorage and redirect
+                        localStorage.setItem('isPro', 'true');
+                        window.location.href = data.url;
+                        
+                    } catch (error) {
+                        console.error('Error updating pro status:', error);
+                        setError('Failed to activate Pro status. Please contact support.');
+                        setIsLoading(false);
+                    }
                 } else {
                     throw new Error("No redirect URL received from payment server");
                 }

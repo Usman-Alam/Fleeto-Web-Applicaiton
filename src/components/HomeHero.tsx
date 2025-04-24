@@ -8,7 +8,8 @@ import { useAuth } from "@contexts/AuthContext";
 
 export default function HomeHero() {
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
+    // const { isAuthenticated } = useAuth();
+    const isAuthenticated = Boolean(localStorage.getItem("token"));
 
     const handleOrderNowClick = () => {
         if (!isAuthenticated) {
@@ -21,7 +22,7 @@ export default function HomeHero() {
                 shopsElement.scrollIntoView({ behavior: "smooth" });
             }
         }
-    };
+    }; 
 
     return (
         <section className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[var(--page-top-padding)] flex flex-row items-center justify-between">

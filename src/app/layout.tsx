@@ -23,8 +23,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body className={`${inter.variable} flex flex-col items-top justify-center`}>
-        <SessionProvider>
-          <AuthProvider>
+        {/* <SessionProvider>
+          <AuthProvider> */}
             <CartProvider>
               <div className="relative flex flex-col items-center justify-top w-full h-full overflow-x-clip">
                 <Navbar />
@@ -32,8 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Footer />
               </div>
             </CartProvider>
-          </AuthProvider>
-        </SessionProvider>
+          {/* </AuthProvider>
+        </SessionProvider> */}
       </body>
     </html>
   );

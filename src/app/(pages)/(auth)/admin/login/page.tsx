@@ -7,7 +7,7 @@ import { useAuth } from "@contexts/AuthContext";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

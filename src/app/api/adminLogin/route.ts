@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Username and password are required" },
         { status: 400 }
-      );
+      ); 
     }
 
     // Find admin by username

@@ -36,19 +36,49 @@ export default function OrderConfirmation() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
-  const { user, updateUser } = useAuth(); // Add this line
+  const { user, updateUser } = useAuth();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
-  const [coinsUpdated, setCoinsUpdated] = useState(false); // Track if we've updated coins
+  const [coinsUpdated, setCoinsUpdated] = useState(false);
+
+  const updateUserCoins = async (coinsEarned: number) => {
+    try {
+      const email = localStorage.getItem('email');
+      if (!email) {
+        console.error('No email found in localStorage');
+        return;
+      }
+
+      const response = await fetch('/api/addCoins', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          coinsToAdd: coinsEarned
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update coins');
+      }
+
+      localStorage.setItem('coins', String(data.newCoinsBalance));
+
+      console.log('Coins updated successfully:', data.newCoinsBalance);
+    } catch (error) {
+      console.error('Error updating coins:', error);
+    }
+  };
 
   useEffect(() => {
-    // Only clear cart once when component mounts
     clearCart();
-  }, []); // Empty dependency array to run only once
+  }, []);
 
   useEffect(() => {
-    // This effect should only run once to get/set order details
     if (orderDetails === null) {
-      // Try to get order details from URL query
       const orderDetailsStr = searchParams.get('orderDetails');
 
       if (orderDetailsStr) {
@@ -57,36 +87,26 @@ export default function OrderConfirmation() {
           setOrderDetails(parsedOrderDetails);
         } catch (error) {
           console.error("Error parsing order details:", error);
-          // Fallback to generating a random order
           generateRandomOrder();
         }
       } else {
-        // No details provided, generate random order
         generateRandomOrder();
       }
     }
-  }, [searchParams, orderDetails]); // Only depend on searchParams and orderDetails
+  }, [searchParams, orderDetails]);
 
   useEffect(() => {
-    // This effect handles the coin balance update
-    if (orderDetails && !coinsUpdated && user && updateUser) {
-      // Calculate new coin balance
-      const currentCoins = user.fleetoCoins || 0;
-      const usedCoins = orderDetails.coinsUsed || 0;
-      const earnedCoins = orderDetails.coinsEarned || 0;
-
-      // Update the user's coin balance
-      updateUser({
-        fleetoCoins: currentCoins - usedCoins + earnedCoins
-      });
-
-      // Mark coins as updated to prevent multiple updates
-      setCoinsUpdated(true);
+    if (orderDetails && !coinsUpdated) {
+      const coinsEarned = orderDetails.coinsEarned || 0;
+      if (coinsEarned > 0) {
+        updateUserCoins(coinsEarned).then(() => {
+          setCoinsUpdated(true);
+        });
+      }
     }
-  }, [orderDetails, user, updateUser, coinsUpdated]);
+  }, [orderDetails, coinsUpdated]);
 
   const generateRandomOrder = () => {
-    // Create a default/fallback order
     setOrderDetails({
       orderNumber: `FLT-${Math.floor(100000 + Math.random() * 900000)}`,
       orderDate: new Date().toLocaleDateString('en-US', {
@@ -114,14 +134,13 @@ export default function OrderConfirmation() {
     return <div className="pt-[150px] text-center">Loading order details...</div>;
   }
 
-  // Calculate total price from order items if not provided
   const totalPrice = orderDetails.total ||
     orderDetails.items.reduce((total, item) => total + item.price * item.quantity, 0);
 
   return (
     <main className="w-[var(--section-width)] mt-[var(--page-top-padding)] flex flex-col items-center justify-start pt-[40px] px-[5%]">
       <div className="w-full max-w-[800px] bg-white rounded-[16px] p-6 md:p-8 shadow-md">
-        {/* Success header */}
+        {/* Success Header Section */}
         <div className="flex flex-col items-center justify-center text-center mb-8">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,7 +153,7 @@ export default function OrderConfirmation() {
           </p>
         </div>
 
-        {/* Order details */}
+        {/* Order Details Section */}
         <div className="border border-gray-200 rounded-[8px] p-4 mb-6">
           <h2 className="text-[18px] md:text-[20px] font-semibold mb-4">Order Details</h2>
           <div className="grid grid-cols-2 gap-y-2">
@@ -153,13 +172,11 @@ export default function OrderConfirmation() {
           </div>
         </div>
 
-        {/* Order summary */}
         <div className="mb-6">
           <h2 className="text-[18px] md:text-[20px] font-semibold mb-4">Order Summary</h2>
 
           {orderDetails.items && orderDetails.items.length > 0 ? (
             <div className="border border-gray-200 rounded-[8px] overflow-hidden">
-              {/* Items list */}
               <div className="max-h-[300px] overflow-y-auto">
                 {orderDetails.items.map((item, index) => (
                   <div key={item.id} className="flex items-center gap-3 p-3 border-b border-gray-100">
@@ -184,7 +201,6 @@ export default function OrderConfirmation() {
                 ))}
               </div>
 
-              {/* Price breakdown */}
               <div className="bg-gray-50 p-4">
                 {orderDetails.subtotal !== undefined && (
                   <div className="flex justify-between items-center mb-2">
@@ -207,7 +223,6 @@ export default function OrderConfirmation() {
                   </div>
                 )}
 
-                {/* Only show FleetoCoins section if coins were actually used or earned */}
                 {((orderDetails.coinsUsed && orderDetails.coinsUsed > 0) ||
                   (orderDetails.coinsEarned && orderDetails.coinsEarned > 0) ||
                   (orderDetails.coinDiscount && orderDetails.coinDiscount > 0)) && (
@@ -220,7 +235,6 @@ export default function OrderConfirmation() {
                           <span>FleetoCoins</span>
                         </h3>
 
-                        {/* These internal conditionals can stay as they are */}
                         {orderDetails.coinsUsed && orderDetails.coinsUsed > 0 ? (
                           <div className="flex justify-between items-center mb-1 text-sm">
                             <span className="text-[var(--body)]">FleetoCoins Used:</span>
@@ -258,7 +272,6 @@ export default function OrderConfirmation() {
           )}
         </div>
 
-        {/* Delivery info */}
         <div className="border border-gray-200 rounded-[8px] p-4 mb-6">
           <h2 className="text-[18px] md:text-[20px] font-semibold mb-4">Delivery Information</h2>
           <div className="grid grid-cols-1 gap-y-2">
@@ -273,7 +286,6 @@ export default function OrderConfirmation() {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 mt-8">
           <SiteButton
             text="Return to Home"
