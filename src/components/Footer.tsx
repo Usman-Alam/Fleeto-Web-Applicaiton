@@ -1,8 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { MapPin, Phone, Mail, Instagram, Twitter, Facebook } from 'lucide-react';
-import SiteButton from '@components/SiteButton';
 import Logo from './Logo';
 
 const Footer: React.FC = () => {
@@ -11,7 +9,7 @@ const Footer: React.FC = () => {
     return (
         <footer className="bg-[var(--bg2)] w-full mt-[var(--section-top-padding)] flex flex-col items-center justify-center">
             {/* Main Footer Content */}
-            <div className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[var(--page-top-padding)] px-4 md:px-8 lg:px-0 mx-auto py-12">
+            <div className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[64px] px-4 md:px-8 lg:px-0 mx-auto py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Column 1: About */}
                     <div className="flex flex-col gap-4">
@@ -113,39 +111,6 @@ const Footer: React.FC = () => {
                                 <Mail size={18} className="text-[var(--accent)] flex-shrink-0" />
                                 <p className="text-sm">support@fleeto.pk</p>
                             </div>
-                        </div>
-
-                        <div className="mt-6">
-                            <h5 className="font-semibold mb-2">Subscribe to our Newsletter</h5>
-                            <div className="flex gap-2 mt-2">
-                                <input
-                                    type="email"
-                                    placeholder="Your email address"
-                                    className="p-2 text-sm border border-[var(--shadow)] rounded-[8px] focus:outline-none focus:border-[var(--accent)] w-full"
-                                />
-                                <SiteButton
-                                    text="Join"
-                                    variant="filled"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* App Download Section */}
-                <div className="mt-10 border-t border-[var(--shadow)] pt-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div>
-                            <h5 className="font-semibold mb-2">Download the Fleeto App</h5>
-                            <p className="text-sm text-[var(--body)]">Get the full experience on your mobile device</p>
-                        </div>
-                        <div className="flex gap-4">
-                            <Link href="https://play.google.com">
-                                <Image src="/google-play.png" alt="Google Play" width={135} height={40} />
-                            </Link>
-                            <Link href="https://apps.apple.com">
-                                <Image src="/app-store.png" alt="App Store" width={135} height={40} />
-                            </Link>
                         </div>
                     </div>
                 </div>

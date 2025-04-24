@@ -24,6 +24,8 @@ export interface User {
   image?: string;
   role?: 'user' | 'admin' | 'restaurant';
   fleetoCoins?: number;
+  isPro?: boolean;
+  proExpiryDate?: string; // ISO date string
 }
 
 // Define the login credentials type
@@ -148,6 +150,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!user) {
         throw new Error('No user logged in');
       }
+
+      // Here we would also make an API call to update the user in the database
+      // For example:
+      // await fetch('/api/user/update', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(updatedUserData)
+      // });
 
       // Merge current user data with updates
       const updatedUser = {

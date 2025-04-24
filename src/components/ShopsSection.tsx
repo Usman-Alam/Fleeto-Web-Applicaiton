@@ -9,12 +9,12 @@ interface ShopData {
     desc: string;
     href: string;
     image: string;
-    rating: number;
-    orderCount: number;
+    rating?: number;
+    orderCount?: number;
     category: string;
     deliveryTime: string;
     deliveryType: string;
-    slug: string; // Added slug property
+    slug: string;
 }
 
 interface ShopsSectionProps {
@@ -66,19 +66,22 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
                                     <div className="flex flex-col gap-[6px]">
                                         <div className="flex flex-row items-center justify-between gap-[4px]">
                                             <h6>{item.title}</h6>
-                                            <div className="flex flex-row items-center gap-[4px] text-[14px]">
-                                                <div className="relative w-[16px] aspect-[1]">
-                                                    <Image
-                                                        src="/star.svg"
-                                                        alt="Star Icon"
-                                                        fill
-                                                    />
+                                            {/* Only show ratings for restaurants, not for grocery or medicine */}
+                                            {heading.toLowerCase() !== "grocery" && heading.toLowerCase() !== "medicine" ? (
+                                                <div className="flex flex-row items-center gap-[4px] text-[14px]">
+                                                    <div className="relative w-[16px] aspect-[1]">
+                                                        <Image
+                                                            src="/star.svg"
+                                                            alt="Star Icon"
+                                                            fill
+                                                        />
+                                                    </div>
+                                                    <p>{item.rating}</p>
+                                                    <p>
+                                                        (<span>{item.orderCount}</span>+)
+                                                    </p>
                                                 </div>
-                                                <p>{item.rating}</p>
-                                                <p>
-                                                    (<span>{item.orderCount}</span>+)
-                                                </p>
-                                            </div>
+                                            ) : null}
                                         </div>
                                         <p className="text-[16px]">{item.desc}</p>
                                     </div>

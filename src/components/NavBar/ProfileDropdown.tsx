@@ -4,21 +4,19 @@ import { forwardRef } from "react";
 import Image from "next/image";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import SiteButton from "@components/SiteButton";
-import { User, useAuth } from "@contexts/AuthContext";
-import { Coins } from "lucide-react";
+import { User } from "@contexts/AuthContext";
+import { Coins, Crown } from "lucide-react";
 
 interface ProfileDropdownProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    user: User | null;
     logout: () => Promise<void>;
     router: AppRouterInstance;
 }
 
 const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
-    function ProfileDropdown({ isOpen, setIsOpen, logout, router }, ref) {
-        // Get user directly from context
-        const { user } = useAuth();
-
+    function ProfileDropdown({ isOpen, setIsOpen, user, logout, router }, ref) {
         return (
             <div className="relative" ref={ref}>
                 <Image
@@ -31,7 +29,7 @@ const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
                 />
 
                 {isOpen && (
-                    <div className="absolute top-[50px] right-0 bg-white shadow-lg p-4 rounded-md w-[200px] z-50">
+                    <div className="absolute top-[50px] right-0 bg-white shadow-lg p-4 rounded-md w-[320px] z-50">
                         <div
                             onClick={() => {
                                 setIsOpen(false);
@@ -56,6 +54,32 @@ const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
                                 </p>
                             </div>
                         </div>
+
+                        {/* Fleeto Pro Status/Button */}
+                        {user?.isPro ? (
+                            <div className="py-3 px-2 my-3 bg-gradient-to-r from-[#F1C40F] to-[#D4AC0D] rounded-md border border-[#F1C40F] flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Crown className="text-white" size={18} />
+                                    <div>
+                                        <p className="text-[12px] text-white font-medium">Fleeto Pro</p>
+                                        <p className="text-[10px] text-white">
+                                            Expires: {new Date(user.proExpiryDate || "").toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <SiteButton
+                                text="Get Fleeto Pro"
+                                variant="outlined"
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    router.push("/fleeto-pro");
+                                }}
+                                fullWidth
+                                className="my-3"
+                            />
+                        )}
 
                         <SiteButton
                             text="Logout"
