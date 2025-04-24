@@ -143,7 +143,7 @@ export default function PaymentPage() {
                   <h3 className="font-medium text-yellow-800 mb-1">Troubleshooting:</h3>
                   <ul className="list-disc text-sm text-yellow-700 pl-5">
                     <li>Make sure the Stripe server is running: <code className="bg-gray-100 px-1 rounded">node server/stripeServer.js</code></li>
-                    <li>Check that it's running on port 4173</li>
+                    <li>Check that it&apos;s running on port 4173</li>
                     <li>Check server console for errors</li>
                   </ul>
                 </div>

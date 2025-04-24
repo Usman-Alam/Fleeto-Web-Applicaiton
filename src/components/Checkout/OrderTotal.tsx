@@ -1,4 +1,4 @@
-import { Coins } from "lucide-react";
+import { Crown, Coins } from "lucide-react";
 import SiteButton from "@components/SiteButton";
 
 interface OrderTotalProps {
@@ -10,6 +10,8 @@ interface OrderTotalProps {
     tax: number;
     coinsToUse: number;
     coinDiscount: number;
+    isPro: boolean;
+    proDiscount: number;
     total: number;
     isPlacingOrder: boolean;
     error?: string;
@@ -26,6 +28,8 @@ export default function OrderTotal({
     tax,
     coinsToUse,
     coinDiscount,
+    isPro,
+    proDiscount,
     total,
     isPlacingOrder,
     error,
@@ -73,6 +77,17 @@ export default function OrderTotal({
                             <span className="text-xs text-[var(--body)] ml-1">({coinsToUse} coins)</span>
                         </span>
                         <span>-${coinDiscount.toFixed(2)}</span>
+                    </div>
+                )}
+
+                {/* Fleeto Pro discount if applicable */}
+                {isPro && proDiscount > 0 && (
+                    <div className="flex justify-between text-[var(--accent)]">
+                        <span className="flex items-center gap-1">
+                            <Crown size={16} />
+                            <span>Pro Discount (10%)</span>
+                        </span>
+                        <span>-${proDiscount.toFixed(2)}</span>
                     </div>
                 )}
 
