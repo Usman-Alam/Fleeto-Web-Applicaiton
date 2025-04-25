@@ -39,15 +39,7 @@ export async function POST(req: Request) {
       { expiresIn: '7d' }
     );
 
-    // Log the user data before sending
-    console.log('User data being sent:', {
-      email: user.email,
-      firstname: user.firstname,
-      isPro: user.isPro,
-      coins: user.coins,
-      hasSubscription: user.hasSubscription
-    });
-
+    
     // Return user data and token
     return NextResponse.json({
       email: user.email,

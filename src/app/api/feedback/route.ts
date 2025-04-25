@@ -8,7 +8,6 @@ export async function POST(req: Request) {
     await connectDB();
     const feedbackData = await req.json();
 
-    console.log('Received feedback data:', feedbackData);
 
     // Validate required fields
     if (!feedbackData.name || !feedbackData.feedback || !feedbackData.rating) {
@@ -27,11 +26,9 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("REACHED FUCKING HERE!!!!!!!!!!!!!!")
 
     // Create feedback
     const feedback = await Feedback.create(feedbackData);
-    console.log('Feedback created:', feedback);
 
     // If feedback is for a shop, update its rating
     if (feedbackData.category !== "App" && feedbackData.shopName) {

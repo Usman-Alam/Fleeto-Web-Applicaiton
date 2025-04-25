@@ -11,10 +11,7 @@ export async function POST(req: Request) {
     await connectDB();
     const { otp, email } = await req.json();
 
-    console.log('Verifying OTP for:', {
-      email: email,
-      receivedOTP: otp
-    });
+    
 
     if (!email) {
       return NextResponse.json({ 
@@ -24,12 +21,10 @@ export async function POST(req: Request) {
 
     // Get the OTP verification record by email
     const otpRecord = await UserOTPVerify.findOne({ email });
-    console.log('Found OTP record:', otpRecord);
     
     if (!otpRecord) {
       // Try to find any records to debug
       const allRecords = await UserOTPVerify.find({});
-      console.log('All OTP records:', allRecords);
       
       return NextResponse.json({ 
         error: "Verification failed - No OTP found for this email" 
@@ -52,7 +47,6 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Get session data
     const session = await Session.findOne({ userId: otpRecord.userId });
     if (!session) {
       return NextResponse.json({ 
@@ -60,7 +54,6 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Create verified user
     const userData = session.data;
     const user = new User({
       ...userData,
@@ -68,7 +61,6 @@ export async function POST(req: Request) {
     });
     await user.save();
 
-    // Cleanup
     await Promise.all([
       Session.deleteOne({ userId: otpRecord.userId }),
       UserOTPVerify.deleteOne({ email })

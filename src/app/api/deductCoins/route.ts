@@ -7,10 +7,8 @@ export async function POST(req: Request) {
         await connectDB();
         const { email, coinsToDeduct } = await req.json();
         
-        console.log('Received request:', { email, coinsToDeduct });
 
         if (!email || coinsToDeduct === undefined) {
-            console.log('Missing required fields');
             return NextResponse.json(
                 { error: "Email and coinsToDeduct are required" },
                 { status: 400 }
@@ -18,7 +16,6 @@ export async function POST(req: Request) {
         }
 
         const user = await User.findOne({ email });
-        console.log('Found user:', user);
 
         if (!user) {
             return NextResponse.json(
@@ -55,7 +52,6 @@ export async function POST(req: Request) {
             { new: true }
         );
 
-        console.log('Updated user:', updatedUser);
 
         if (!updatedUser) {
             throw new Error('Failed to update user coins');

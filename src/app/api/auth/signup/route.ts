@@ -12,7 +12,6 @@ dotenv.config();
 // Move the function definition before it's used
 async function sendOTPVerificationEmail(_id: string, email: string) {
   try {
-    console.log('Creating transport...');
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -24,7 +23,6 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
       debug: true // Add this for more detailed error logging
     });
 
-    console.log('Verifying transport...');
     await transporter.verify();
 
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`; // Generate a random 4-digit OTP
@@ -48,16 +46,10 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
       email: email
     });
 
-    console.log('Creating OTP record:', {
-      userId: _id,
-      email: email,
-      expiresAt: new Date(Date.now() + 300000)
-    });
+    
 
     const savedOTP = await newOTPVerify.save();
-    console.log('Saved OTP record:', savedOTP);
 
-    console.log('Sending mail...');
     await transporter.sendMail(mailOptions);
 
     return false; // Initial verification status
@@ -93,7 +85,6 @@ export async function POST(req: Request) {
       isVerified: false
     };
 
-    console.log('Generated tempUser:', tempUser);
 
     try {
       // First create the session
@@ -108,19 +99,16 @@ export async function POST(req: Request) {
         expiresAt: new Date(Date.now() + 300000) // 5 minutes
       });
 
-      console.log('Created session:', sessionData);
 
       // Then send OTP
       await sendOTPVerificationEmail(tempUser._id.toString(), email);
 
-      console.log('Generated OTP verification record');
 
       const responseData = {
         tempUserId: tempUser._id.toString(),
         redirectUrl: `/(auth)/user/signupVerify?userId=${tempUser._id.toString()}`
       };
 
-      console.log('Response data:', responseData);
 
       return NextResponse.json({
         message: "Verification email sent successfully",

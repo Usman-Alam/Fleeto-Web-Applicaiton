@@ -5,7 +5,6 @@ import Shop from "@/models/shop";
 export async function POST(req: Request) {
     try {
         await connectDB();
-        console.log("Connected to DB");
 
         const { shopname, menuItem } = await req.json();
 
@@ -17,13 +16,11 @@ export async function POST(req: Request) {
         }
 
         // Debug log
-        console.log("Adding menu item:", { shopname, menuItem });
 
         // First find the shop
         const shop = await Shop.findOne({ name: shopname });
 
         if (!shop) {
-            console.log("Shop not found:", shopname);
             return NextResponse.json(
                 { error: "Shop not found" },
                 { status: 404 }
@@ -46,7 +43,6 @@ export async function POST(req: Request) {
             .select('name menu')
             .lean();
 
-        console.log("Updated shop:", updatedShop);
 
         return NextResponse.json({
             message: "Menu item added successfully",

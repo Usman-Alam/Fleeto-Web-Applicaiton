@@ -22,7 +22,6 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/payment', async (req, res) => {
-    console.log('Payment request received');
     try {
         // Get order details from request body
         const {
@@ -33,7 +32,6 @@ app.post('/payment', async (req, res) => {
             deliveryAddress = ''
         } = req.body;
 
-        console.log(`Processing ${items.length} items, total: $${total}`);
 
         // Create line items for Stripe based on cart items
         const lineItems = items.map(item => ({
@@ -80,7 +78,6 @@ app.post('/payment', async (req, res) => {
             });
         }
 
-        console.log('Creating Stripe session...');
 
         // Create Stripe checkout session
         const session = await stripe.checkout.sessions.create({
@@ -92,9 +89,7 @@ app.post('/payment', async (req, res) => {
             customer_email: email,
         });
 
-        console.log('Stripe session created:', session.id);
-        console.log('Redirect URL:', session.url);
-
+       
         res.json({ url: session.url });
     } catch (error) {
         console.error('Stripe error:', error);

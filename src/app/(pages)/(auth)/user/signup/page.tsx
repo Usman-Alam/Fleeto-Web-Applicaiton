@@ -40,7 +40,6 @@ export default function SignupPage() {
       });
 
       const data = await response.json();
-      console.log("Signup response:", data); // Debug log
 
       if (!response.ok) {
         throw new Error(data.error || `Error: ${response.status}`);

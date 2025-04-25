@@ -67,7 +67,6 @@ export default function OrderConfirmation() {
 
       localStorage.setItem('coins', String(data.newCoinsBalance));
 
-      console.log('Coins updated successfully:', data.newCoinsBalance);
     } catch (error) {
       console.error('Error updating coins:', error);
     }

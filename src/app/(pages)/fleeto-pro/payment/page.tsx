@@ -21,7 +21,6 @@ export default function FleetoProPaymentPage() {
             try {
                 const response = await fetch('http://localhost:4173/test');
                 const data = await response.json();
-                console.log('Server test response:', data);
                 setTestSuccess(true);
             } catch (error) {
                 console.error('Server test failed:', error);
@@ -44,8 +43,6 @@ export default function FleetoProPaymentPage() {
             }
 
             try {
-                console.log("Starting Fleeto Pro payment process");
-                console.log("User data:", user); // Add this to debug
 
                 // Check if user data exists and has necessary fields
                 if (!user || !email) {
@@ -71,10 +68,8 @@ export default function FleetoProPaymentPage() {
                     throw new Error(data.error || "Payment initialization failed");
                 }
 
-                console.log("Received response:", data);
 
                 if (data.url) {
-                    console.log("Redirecting to:", data.url);
                     
                     try {
                         // First update the pro status

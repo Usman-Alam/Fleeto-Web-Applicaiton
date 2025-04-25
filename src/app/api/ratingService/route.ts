@@ -9,12 +9,7 @@ export async function updateShopRating(shopName: string, category: string) {
     
     // First verify the shop exists and log its current state
     const shop = await Shop.findOne({ name: shopName, category });
-    console.log('Initial shop state:', {
-      exists: !!shop,
-      name: shop?.name,
-      currentRating: shop?.rating,
-      currentTotalRatings: shop?.totalRatings
-    });
+    
 
     if (!shop) {
       throw new Error(`Shop not found: ${shopName}`);
@@ -26,10 +21,8 @@ export async function updateShopRating(shopName: string, category: string) {
       category 
     }).lean();
 
-    console.log(`Found ${feedbacks.length} feedbacks`);
 
     if (feedbacks.length === 0) {
-      console.log('No feedbacks found');
       return null;
     }
 
@@ -38,12 +31,6 @@ export async function updateShopRating(shopName: string, category: string) {
     const averageRating = totalRating / feedbacks.length;
     const roundedRating = Number(averageRating.toFixed(1));
     
-    console.log('Rating calculation:', {
-      totalRating,
-      averageRating,
-      roundedRating,
-      feedbackCount: feedbacks.length
-    });
 
     // Use updateOne for more precise update
     const result = await Shop.updateOne(
@@ -56,18 +43,11 @@ export async function updateShopRating(shopName: string, category: string) {
       }
     );
 
-    console.log('Update result:', {
-      matched: result.matchedCount,
-      modified: result.modifiedCount
-    });
+    
 
     // Verify the update
     const updatedShop = await Shop.findById(shop._id);
-    console.log('Final shop state:', {
-      name: updatedShop.name,
-      newRating: updatedShop.rating,
-      newTotalRatings: updatedShop.totalRatings
-    });
+    
 
     if (updatedShop.rating !== roundedRating) {
       throw new Error('Rating update failed - values do not match');

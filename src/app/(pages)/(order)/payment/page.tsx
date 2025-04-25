@@ -21,7 +21,6 @@ export default function PaymentPage() {
       try {
         const response = await fetch('http://localhost:4173/test');
         const data = await response.json();
-        console.log('Server test response:', data);
         setTestSuccess(true);
       } catch (error) {
         console.error('Server test failed:', error);
@@ -45,7 +44,6 @@ export default function PaymentPage() {
       }
 
       try {
-        console.log("Starting payment process");
         let orderDetails;
         try {
           orderDetails = JSON.parse(decodeURIComponent(orderDetailsParam));
@@ -56,7 +54,6 @@ export default function PaymentPage() {
           return;
         }
         
-        console.log("Order details:", orderDetails);
         
         // Check that required fields exist
         if (!orderDetails.items || !Array.isArray(orderDetails.items) || orderDetails.items.length === 0) {
@@ -75,7 +72,6 @@ export default function PaymentPage() {
           deliveryAddress: orderDetails.deliveryAddress || ''
         };
         
-        console.log("Sending payload to server:", payload);
         
         const response = await fetch('http://localhost:4173/payment', {
           method: 'POST',
@@ -85,7 +81,6 @@ export default function PaymentPage() {
           body: JSON.stringify(payload),
         });
 
-        console.log("Response status:", response.status);
         
         const data = await response.json();
         
@@ -94,10 +89,8 @@ export default function PaymentPage() {
           throw new Error(data.message || `Payment failed: ${response.status}`);
         }
 
-        console.log("Received response:", data);
         
         if (data.url) {
-          console.log("Redirecting to:", data.url);
           // Redirect to Stripe checkout
           window.location.href = data.url;
         } else {

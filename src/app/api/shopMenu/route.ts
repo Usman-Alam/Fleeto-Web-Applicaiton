@@ -28,9 +28,6 @@ export async function GET(req: Request) {
             );
         }
 
-        // Debug log to see what's coming from database
-        console.log("Full shop data:", JSON.stringify(shop, null, 2));
-        console.log("Menu data:", JSON.stringify(shop.menu, null, 2));
 
         const formattedShop = {
             id: shop._id,
