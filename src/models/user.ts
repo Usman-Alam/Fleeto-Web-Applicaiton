@@ -45,6 +45,10 @@ const UserSchema = new mongoose.Schema({
   hasSubscription: {
     type: Boolean,
     default: false
+  }, 
+  isVerified: {
+    type: Boolean,
+    default: false
   }
 }, { collection: 'users' });
 

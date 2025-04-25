@@ -63,7 +63,7 @@ export default function PharmacyPage() {
       id: item.id,
       name: item.name,
       price: numericPrice,
-      image: item.image,
+      image: "/shops/meds.png",
     });
   };
 
@@ -146,7 +146,7 @@ export default function PharmacyPage() {
               >
                 <div className="relative w-full h-[150px]">
                   <Image
-                    src={item.image}
+                    src={"/shops/meds.png"}
                     alt={item.name}
                     fill
                     className="object-cover rounded-[8px]"

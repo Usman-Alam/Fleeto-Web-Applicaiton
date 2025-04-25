@@ -14,13 +14,13 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    useEffect(() => { 
         const checkAuth = async () => {
             // Get user role
             const userRole = localStorage.getItem('role');
             
             // Skip authentication check for public pages
-            if (pathname === '/' || pathname === '/login' || pathname === '/signup' || pathname === '/admin/login' || pathname === '/shop/login' || pathname === '/shop/signup' || pathname === '/shop/dashboard' ) {
+            if (pathname === '/' || pathname === '/login' || pathname === '/signup' || pathname === '/admin/login' || pathname === '/shop/login' || pathname === '/shop/signup' || pathname === '/shop/dashboard' || pathname === '/signupVerify') {
                 setIsAuthenticated(true);
                 setIsLoading(false);
                 return;

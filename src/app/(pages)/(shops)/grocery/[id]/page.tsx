@@ -63,7 +63,7 @@ export default function GroceryPage() {
       id: item.id,
       name: item.name,
       price: numericPrice,
-      image: item.image,
+      image: "/shops/gros.jpeg",
     });
   };
 
@@ -144,7 +144,7 @@ export default function GroceryPage() {
             >
               <div className="relative w-full h-[150px]">
                 <Image
-                  src={item.image}
+                  src={"/shops/gros.jpeg"}
                   alt={item.name}
                   fill
                   className="object-cover rounded-[8px]"

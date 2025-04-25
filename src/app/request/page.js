@@ -10,42 +10,12 @@ export default function RequestPage (){
       }
 
 
-      // const options = {
-      //   mapId: "3c5594bda824c5c5"
 
-      // }
       const center = {
         lat: 31.470560140195342,
         lng: 74.41088976026865,
       };
-      // const { isLoaded } = useJsApiLoader({
-      //   id: 'google-map-script',
-      //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-      // })
-    
-      //const [map, setMap] = React.useState(null)
-    
-      // const onLoad = React.useCallback(function callback(map) {
-      //   // This is just an example of getting and using the map instance!!! don't just blindly copy!
-      //   const bounds = new window.google.maps.LatLngBounds(center)
-      //   map.fitBounds(bounds)
-    
-      //   setMap(map)
-      // }, [])
-    
-      // const onUnmount = React.useCallback(function callback(map) {
-      //   setMap(null)
-      // }, [])
-    
-// function MarkerClicked(event) {
-//         console.log(event.latLng.lat());
-//         console.log(event.latLng.lng())
-//       }
-
-//       function MarkerFinishedDrag(event) {
-//         console.log(event.latLng.lat());
-//         console.log(event.latLng.lng())
-//       }
+      
 
       return (
         <div style={{ height: '90vh', width: '100%' }}>

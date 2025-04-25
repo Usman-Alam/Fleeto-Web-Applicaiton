@@ -42,8 +42,7 @@ export default function AdminLoginPage() {
         throw new Error(data.error || "Login failed");
       }
 
-      // Successful login
-      // await login(data.data);
+      
       localStorage.setItem('role', data.data.role);
       localStorage.setItem('name', data.data.username);
       localStorage.setItem('email', data.data.email);

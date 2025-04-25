@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import FormTemplatePage from "@components/FormTemplatePage";
+import { useRouter } from 'next/navigation';
 
 export default function Signup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -151,7 +153,6 @@ export default function Signup() {
       return;
     }
     
-    // Ensure terms are accepted
     if (!formData.terms) {
       setError("You must accept the terms and conditions to proceed.");
       return;
@@ -170,12 +171,12 @@ export default function Signup() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Get the error message from the API response
         throw new Error(data.error || `Error: ${response.status}`);
       }
-
-      // Success - redirect to login page
-      window.location.href = "/login?registered=success";
+      localStorage.setItem("email", formData.email); // Store email in localStorage for later use
+      // Redirect to OTP verification page with userId
+      router.push(`/signupVerify?userId=${data.userId}`);
+      
     } catch (err) {
       console.error("Error:", err);
       setError(err instanceof Error ? err.message : "An unexpected error occurred. Please try again.");

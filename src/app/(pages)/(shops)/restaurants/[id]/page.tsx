@@ -63,7 +63,7 @@ export default function RestaurantPage() {
       id: item.id,
       name: item.name,
       price: numericPrice,
-      image: item.image,
+      image: '/shops/genericRestaurant.jpeg',
     });
   };
 
@@ -144,7 +144,7 @@ export default function RestaurantPage() {
             >
               <div className="relative w-full h-[150px]">
                 <Image
-                  src={item.image}
+                  src={'/shops/genericRestaurant.jpeg'}
                   alt={item.name}
                   fill
                   className="object-cover rounded-[8px]"
