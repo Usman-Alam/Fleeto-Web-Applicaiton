@@ -260,7 +260,7 @@ export default function AddShopPage() {
 
             {/* Cuisines */}
             <div className="space-y-4">
-              <h2 className="text-[20px] font-semibold">Cuisines</h2>
+              <h2 className="text-[20px] font-semibold">Tags</h2>
               <div className="flex gap-2">
                 <input
                   type="text"

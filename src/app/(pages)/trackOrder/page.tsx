@@ -20,6 +20,10 @@ export default function OrderTrackingPage() {
         return 0;
     });
 
+    var maxTime: number = Number(localStorage.getItem('maxDeliveryTime'))
+    var prepareTime = maxTime / 2
+    var inTransitTime = maxTime / 2
+
     useEffect(() => {
         let timer1: NodeJS.Timeout;
         let timer2: NodeJS.Timeout;
@@ -29,14 +33,14 @@ export default function OrderTrackingPage() {
             timer1 = setTimeout(() => {
                 setCurrentStage(1);
                 localStorage.setItem(`orderStage_${orderNumber}`, '1');
-            }, 0.1 * 60 * 1000); // 6 seconds
+            }, (prepareTime / 120) * 60 * 1000); // 6 seconds
         }
 
         if (currentStage === 1) {
             timer2 = setTimeout(() => {
                 setCurrentStage(2);
                 localStorage.setItem(`orderStage_${orderNumber}`, '2');
-            }, 0.2 * 60 * 1000); // 12 seconds
+            }, (inTransitTime / 60) * 60 * 1000); // 12 seconds
         }
 
         return () => {
@@ -110,8 +114,8 @@ export default function OrderTrackingPage() {
                     {/* Estimated Time */}
                     <div className="mt-8 p-4 bg-[var(--bg2)] rounded-lg">
                         <p className="text-center text-[var(--body)]">
-                            {currentStage === 0 && "Estimated preparation time: 10 minutes"}
-                            {currentStage === 1 && "Estimated delivery time: 10 minutes"}
+                            {currentStage === 0 && `Estimated preparation time: ${prepareTime} minutes`}
+                            {currentStage === 1 && `Estimated delivery time: ${inTransitTime} minutes`}
                             {currentStage === 2 && "Order has been delivered!"}
                         </p>
                     </div>

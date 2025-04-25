@@ -14,7 +14,7 @@ interface GroceryData {
   rating: number;
   deliveryTime: string;
   deliveryFee: string;
-  items: GroceryItem[];
+  menu: GroceryItem[]; // Changed from items to menu for consistency
 }
 
 interface GroceryItem {
@@ -28,56 +28,37 @@ interface GroceryItem {
 export default function GroceryPage() {
   const { id } = useParams() as { id: string };
   const [grocery, setGrocery] = useState<GroceryData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { addToCart } = useCart();
 
-  // Simulate fetching grocery data
   useEffect(() => {
-    // Replace this with an actual API call
     const fetchGroceryData = async () => {
-      const mockData: GroceryData = {
-        id,
-        name: "Imtiaz Grocery Store",
-        description:
-          "Offering a wide range of fresh produce, pantry staples, and household essentials.",
-        image: "/shops/imtiaz_supermarket.jpg",
-        rating: 4.7,
-        deliveryTime: "25-35 mins",
-        deliveryFee: "Free",
-        items: [
-          {
-            id: "1",
-            name: "Fresh Apples",
-            description: "Crisp and juicy apples, perfect for snacking.",
-            price: "$3.99 / lb",
-            image: "/shops/fresh_apples.jpeg",
-          },
-          {
-            id: "2",
-            name: "Organic Milk",
-            description: "Fresh organic milk from local farms.",
-            price: "$4.49 / gallon",
-            image: "/shops/organic_milk.jpeg",
-          },
-          {
-            id: "3",
-            name: " Wheat Bread",
-            description: "Soft and healthy whole wheat bread.",
-            price: "$2.99 / loaf",
-            image: "/shops/wheat_bread.jpeg",
-          },
-        ],
-      };
-      setGrocery(mockData);
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/shopMenu?slug=${id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch grocery data");
+        }
+
+        setGrocery(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching grocery:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (id) fetchGroceryData();
+    if (id) {
+      fetchGroceryData();
+    }
   }, [id]);
 
-  // Function to handle adding an item to the cart
   const handleAddToCart = (item: GroceryItem) => {
-    // Extract the numeric price from the string (e.g., "$3.99 / lb" → 3.99)
-    const numericPrice = parseFloat(item.price.replace(/[^0-9.]/g, ''));
-    
+    const numericPrice = parseFloat(item.price.replace("$", ""));
     addToCart({
       id: item.id,
       name: item.name,
@@ -86,8 +67,35 @@ export default function GroceryPage() {
     });
   };
 
+  const filterSampleItems = (menuItems: GroceryItem[]) => {
+    return menuItems.filter(item => 
+      !item.name.toLowerCase().includes('sample') && 
+      !item.description.toLowerCase().includes('sample')
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="text-xl">Loading grocery details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="text-xl text-red-500">{error}</div>
+      </div>
+    );
+  }
+
   if (!grocery) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="text-xl">Grocery not found</div>
+      </div>
+    );
   }
 
   return (
@@ -101,7 +109,9 @@ export default function GroceryPage() {
           className="object-cover"
         />
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 text-white">
-          <h1><span className="text-[var(--white)]">{grocery.name}</span></h1>
+          <h1>
+            <span className="text-[var(--white)]">{grocery.name}</span>
+          </h1>
           <p className="text-[16px]">{grocery.description}</p>
           <div className="flex flex-row items-center gap-[10px] mt-[10px]">
             <div className="flex items-center gap-[5px]">
@@ -124,9 +134,9 @@ export default function GroceryPage() {
 
       {/* Grocery Items Section */}
       <div className="w-[var(--section-width)] mt-[20px] flex flex-col gap-[20px]">
-        <h2 className="text-[20px] font-bold">Available Groceries</h2>
+        <h2 className="text-[20px] font-bold">Available Items</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
-          {grocery.items.map((item) => (
+          {grocery.menu && filterSampleItems(grocery.menu).map((item) => (
             <div
               key={item.id}
               className="flex flex-col items-stretch gap-[10px] bg-[var(--bg2)] rounded-[16px] p-[16px]"
@@ -145,9 +155,9 @@ export default function GroceryPage() {
                 <p className="text-[14px] text-gray-500">{item.description}</p>
                 <div className="flex flex-row items-center justify-between">
                   <span className="text-[16px] font-bold">{item.price}</span>
-                  <SiteButton 
-                    text="Add to Cart" 
-                    variant="outlined" 
+                  <SiteButton
+                    text="Add to Cart"
+                    variant="outlined"
                     onClick={() => handleAddToCart(item)}
                   />
                 </div>
