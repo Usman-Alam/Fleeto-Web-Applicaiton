@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Add router import
 import HomeHero from "@components/HomeHero";
 import ShopsSection from "@components/ShopsSection";
 import FAQsSection from "@components/FAQsSection";
 import BecomeAPartnerSection from "@components/BecomeAPartnerSection";
+import SiteButton from "@components/SiteButton";
 
 interface SectionState {
   data: any[];
@@ -13,6 +15,8 @@ interface SectionState {
 }
 
 export default function Home() {
+  const router = useRouter(); // Add router initialization
+
   // Separate loading states for each section
   const [sections, setSections] = useState<{
     restaurants: SectionState;
@@ -23,6 +27,9 @@ export default function Home() {
     grocery: { data: [], isLoading: true, error: null },
     medicine: { data: [], isLoading: true, error: null }
   });
+
+  // Add state for feedback modal
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const fetchRestaurants = async () => {
     try {
@@ -157,11 +164,53 @@ export default function Home() {
         />
       )}
 
+      {/* Feedback Buttons Section - Updated */}
+      <div className="w-full max-w-[var(--section-width)] my-[60px] flex flex-row items-center justify-center gap-4">
+        <SiteButton
+          text="Give Feedback"
+          variant="filled"
+          href="/feedback" // Use href instead of onClick
+          className="min-w-[150px] hover:scale-105 transition-transform"
+        />
+        <SiteButton
+          text="View Feedback"
+          variant="outlined"
+          href="/feedbackDisplay" // Use href instead of onClick
+          className="min-w-[150px] hover:scale-105 transition-transform"
+        />
+      </div>
+
       <div id="faqs"></div>
       <FAQsSection />
-
-      {/* Shop Owner Benefits Section - Added before FAQs */}
       <BecomeAPartnerSection />
+
+      {/* Feedback Modal */}
+      {showFeedbackModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Give Your Feedback</h3>
+            <textarea 
+              className="w-full p-2 border rounded mb-4 min-h-[100px]"
+              placeholder="Share your thoughts..."
+            />
+            <div className="flex justify-end gap-2">
+              <SiteButton
+                text="Cancel"
+                variant="outlined"
+                onClick={() => setShowFeedbackModal(false)}
+              />
+              <SiteButton
+                text="Submit"
+                variant="filled"
+                onClick={() => {
+                  // Handle feedback submission
+                  setShowFeedbackModal(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

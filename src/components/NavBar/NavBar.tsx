@@ -59,13 +59,7 @@ export default function Navbar() {
     }, []);
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('email');
-        localStorage.removeItem('name');
-        localStorage.removeItem('isPro');
-        localStorage.removeItem('coins');
-        localStorage.removeItem('hasSubscription');
-
+        localStorage.clear(); 
         setIsAuthenticated(false);
         setUser(null);
 

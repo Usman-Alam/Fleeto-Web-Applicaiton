@@ -318,7 +318,7 @@ export default function ShopSignupPage() {
                 }
             };
 
-            const response = await fetch('/api/shop/register', {
+            const response = await fetch('/api/addShop', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

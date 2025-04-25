@@ -6,6 +6,7 @@ import Navbar from "@components/NavBar/NavBar";
 import SessionProvider from "@providers/SessionProvider";
 import { AuthProvider } from "@contexts/AuthContext";
 import Footer from "@components/Footer";
+import ProtectedRoute from "@/components/ProtectedRoutes";
 
 // For variable font
 const inter = localFont({
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.variable} flex flex-col items-top justify-center`}>
         {/* <SessionProvider>
           <AuthProvider> */}
+          <ProtectedRoute>
             <CartProvider>
               <div className="relative flex flex-col items-center justify-top w-full h-full overflow-x-clip">
                 <Navbar />
@@ -32,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Footer />
               </div>
             </CartProvider>
+            </ProtectedRoute>
           {/* </AuthProvider>
         </SessionProvider> */}
       </body>

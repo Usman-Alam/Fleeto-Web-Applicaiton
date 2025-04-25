@@ -73,6 +73,42 @@ export default function OrderConfirmation() {
     }
   };
 
+  // Add this function inside your OrderConfirmation component
+const handleTrackOrder = async () => {
+  try {
+      const shopname = localStorage.getItem('currentShop');
+      if (!shopname) {
+          console.error('No shop found in localStorage');
+          return;
+      }
+
+      const response = await fetch('/api/shopAddress', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ shopname })
+      });
+
+      const data = await response.json();
+      localStorage.setItem('shopAddress', data.address.street)
+      localStorage.setItem('maxDeliveryTime', data.maxDeliveryTime)
+
+      if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch shop details');
+      }
+
+      // Navigate to tracking page with all necessary information
+      router.push(`/trackOrder?orderNumber=${orderDetails?.orderNumber}&shopAddress=${encodeURIComponent(
+          `${data.address.street}, ${data.address.city}, ${data.address.postalCode}`
+      )}&maxDeliveryTime=${data.maxDeliveryTime}`);
+
+  } catch (error) {
+      console.error('Error fetching shop details:', error);
+      alert('Failed to load tracking information');
+  }
+};
+
   useEffect(() => {
     clearCart();
   }, []);
@@ -296,7 +332,7 @@ export default function OrderConfirmation() {
           <SiteButton
             text="Track My Order"
             variant="filled"
-            onClick={() => router.push(`/trackOrder?orderNumber=${orderDetails.orderNumber}`)}
+            onClick={handleTrackOrder}
             fullWidth
           />
         </div>

@@ -115,6 +115,7 @@ const ProfileDropdown = forwardRef<HTMLDivElement, ProfileDropdownProps>(
                             onClick={() => {
                                 setIsOpen(false);
                                 logout();
+                                // localStorage.clear();
                                 router.push("/login");
                             }}
                             fullWidth

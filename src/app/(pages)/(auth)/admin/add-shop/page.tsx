@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteButton from "@components/SiteButton";
-import { Store, Phone, Mail, Clock, Truck, Star } from "lucide-react";
+import { Store, Phone, Mail, Clock, Truck, Star, Lock } from "lucide-react";
 
 interface ShopFormData {
   name: string;
@@ -26,6 +26,8 @@ interface ShopFormData {
   deliveryFee: number;
   freeDeliveryAbove: number | null;
   image: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export default function AddShopPage() {
@@ -33,7 +35,7 @@ export default function AddShopPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [cuisineInput, setCuisineInput] = useState("");
-  
+
   const [formData, setFormData] = useState<ShopFormData>({
     name: "",
     description: "",
@@ -55,13 +57,56 @@ export default function AddShopPage() {
     deliveryFee: 0,
     freeDeliveryAbove: null,
     image: "/no_shop.png",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    
+
+    // Password validation
+    if (name === "password") {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+`~[\]{};:'"\\|,<.>/?]).{8,}$/;
+
+      if (value.trim() === "") {
+        e.target.setCustomValidity("Password is required.");
+      } else if (!passwordRegex.test(value)) {
+        e.target.setCustomValidity(
+          "Password must have minimum 8 characters, a number, an uppercase letter, and a special character."
+        );
+      } else {
+        e.target.setCustomValidity("");
+      }
+
+      // Update confirm password validation if it has a value
+      if (formData.confirmPassword) {
+        const confirmPasswordInput = document.querySelector(
+          'input[name="confirmPassword"]'
+        ) as HTMLInputElement;
+
+        if (confirmPasswordInput) {
+          if (value !== formData.confirmPassword) {
+            confirmPasswordInput.setCustomValidity("Passwords do not match.");
+          } else {
+            confirmPasswordInput.setCustomValidity("");
+          }
+        }
+      }
+    }
+
+    // Confirm password validation
+    if (name === "confirmPassword") {
+      if (value.trim() === "") {
+        e.target.setCustomValidity("Please confirm your password.");
+      } else if (value !== formData.password) {
+        e.target.setCustomValidity("Passwords do not match.");
+      } else {
+        e.target.setCustomValidity("");
+      }
+    }
+
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
       setFormData((prev) => ({
@@ -99,45 +144,56 @@ export default function AddShopPage() {
     setError("");
 
     try {
-        // Generate slug from shop name
-        const slug = formData.name
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+      // Check if passwords match
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
 
-        // Create submission data with slug
-        const submissionData = {
-            ...formData,
-            slug
-        };
+      const slug = formData.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
 
-        const response = await fetch("/api/addShop", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(submissionData),
-        });
+      // Create submission data with slug and password
+      const submissionData = {
+        ...formData,
+        slug,
+        password: formData.password // Include password
+      };
 
-        const data = await response.json();
+      // Remove confirmPassword from submission
+      delete submissionData.confirmPassword;
 
-        if (!response.ok) {
-            throw new Error(data.error || "Failed to add shop");
-        }
+      const response = await fetch("/api/addShop", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submissionData),
+      });
 
-        router.push("/admin/dashboard?success=true");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to add shop");
+      }
+
+      router.push("/admin/dashboard?success=true");
     } catch (error) {
-        console.error('Error details:', error);
-        setError(error.message);
+      console.error('Error details:', error);
+      setError(error.message);
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center w-full">
       <div className="w-[var(--section-width)] max-w-[var(--section-max-width)] mt-[var(--page-top-padding)] mb-[30px]">
-        <div className="bg-white rounded-[16px] p-6 md:p-8" style={{ boxShadow: "0px 1px 10px var(--shadow)" }}>
+        <div
+          className="bg-white rounded-[16px] p-6 md:p-8"
+          style={{ boxShadow: "0px 1px 10px var(--shadow)" }}
+        >
           <h1 className="text-[28px] font-bold mb-6 flex items-center gap-2">
             <Store className="text-[var(--accent)]" />
             Add New Shop
@@ -153,10 +209,12 @@ export default function AddShopPage() {
             {/* Basic Information */}
             <div className="space-y-4">
               <h2 className="text-[20px] font-semibold">Basic Information</h2>
-              
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Shop Name</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Shop Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -166,9 +224,11 @@ export default function AddShopPage() {
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium mb-1">Category</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Category
+                  </label>
                   <select
                     name="category"
                     value={formData.category}
@@ -184,7 +244,9 @@ export default function AddShopPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
+                <label className="block text-sm font-medium mb-1">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -239,7 +301,7 @@ export default function AddShopPage() {
                 <Phone className="text-[var(--accent)]" size={20} />
                 Contact Information
               </h2>
-              
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Phone</label>
@@ -252,7 +314,7 @@ export default function AddShopPage() {
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-1">Email</label>
                   <input
@@ -267,10 +329,46 @@ export default function AddShopPage() {
               </div>
             </div>
 
+            {/* Security */}
+            <div className="space-y-4">
+              <h2 className="text-[20px] font-semibold flex items-center gap-2">
+                <Lock className="text-[var(--accent)]" size={20} />
+                Security
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border rounded-md"
+                    placeholder="Choose a secure password"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Confirm Password</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border rounded-md"
+                    placeholder="Confirm your password"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Address */}
             <div className="space-y-4">
               <h2 className="text-[20px] font-semibold">Address</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Street</label>
@@ -283,7 +381,7 @@ export default function AddShopPage() {
                     className="w-full p-2 border rounded-md"
                   />
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">City</label>
@@ -296,9 +394,11 @@ export default function AddShopPage() {
                       className="w-full p-2 border rounded-md"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium mb-1">Postal Code</label>
+                    <label className="block text-sm font-medium mb-1">
+                      Postal Code
+                    </label>
                     <input
                       type="text"
                       name="address.postalCode"
@@ -317,10 +417,12 @@ export default function AddShopPage() {
                 <Truck className="text-[var(--accent)]" size={20} />
                 Delivery Information
               </h2>
-              
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Delivery Time (minutes)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Delivery Time (minutes)
+                  </label>
                   <div className="flex gap-2">
                     <input
                       type="number"
@@ -344,9 +446,11 @@ export default function AddShopPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium mb-1">Delivery Fee ($)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Delivery Fee ($)
+                  </label>
                   <input
                     type="number"
                     name="deliveryFee"

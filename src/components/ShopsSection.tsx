@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import SiteButton from "./SiteButton";
 
@@ -24,12 +25,32 @@ interface ShopsSectionProps {
 }
 
 export default function ShopsSection({ icon, heading, data }: ShopsSectionProps) {
+    const router = useRouter();
     const [visibleRows, setVisibleRows] = useState(1); // State to track visible rows
     const itemsPerRow = 3; // Number of items per row
     const visibleItems = visibleRows * itemsPerRow;
 
     const handleLoadMore = () => {
         setVisibleRows((prev) => prev + 1); // Increase the number of visible rows
+    };
+
+    const handleOrderNow = (item: ShopData) => {
+        try {
+            // Store restaurant info in localStorage
+            localStorage.setItem('currentShop', item.title);
+            localStorage.setItem('shopSlug', item.slug);
+
+            // Debug log
+            console.log('Stored shop:', {
+                name: item.title,
+                slug: item.slug
+            });
+
+            // Navigate to the shop page
+            router.push(`/${heading.toLowerCase()}/${item.slug}`);
+        } catch (error) {
+            console.error('Error storing shop data:', error);
+        }
     };
 
     return (
@@ -120,12 +141,12 @@ export default function ShopsSection({ icon, heading, data }: ShopsSectionProps)
                                         </div>
                                     </div>
                                 </div>
-                                <SiteButton
-                                    text="Order Now"
-                                    variant="outlined"
-                                    fullWidth
-                                    href={`/${heading.toLowerCase()}/${item.slug}`} // Dynamic link using slug
-                                />
+                                <button
+                                    onClick={() => handleOrderNow(item)}
+                                    className="w-full bg-white text-[var(--accent)] border-2 border-[var(--accent)] px-4 py-2 rounded-md hover:bg-[var(--accent)] hover:text-white transition-colors"
+                                >
+                                    Order Now
+                                </button>
                             </div>
                         </div>
                     ))}

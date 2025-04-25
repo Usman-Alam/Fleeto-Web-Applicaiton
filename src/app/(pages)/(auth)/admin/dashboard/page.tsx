@@ -83,6 +83,13 @@ export default function AdminDashboard() {
         setIsLoading(false);
     }, [role, router, isLoading]);
 
+    // Add this function near your other handlers
+    const handleAdminLogout = () => {
+        // Clear all admin-related items from localStorage
+        localStorage.clear();
+        router.replace('/admin/login');
+    };
+
     // Rest of your component functions
     const handleAddShopClick = () => {
         router.push("/admin/add-shop");
@@ -181,11 +188,22 @@ export default function AdminDashboard() {
                             Manage shops, track orders, and update content from this central dashboard.
                         </p>
                     </div>
-                    <SiteButton
-                        text="Add New Shop"
-                        variant="filled"
-                        onClick={handleAddShopClick}
-                    />
+                    <div className="flex flex-col items-center md:items-start w-full gap-3">
+                        <div className="flex flex-col items-center md:items-start gap-3">
+                            <SiteButton
+                                text="Add New Shop"
+                                variant="filled"
+                                onClick={handleAddShopClick}
+                                className="w-[150px]"  // Changed to consistent width
+                            />
+                            <SiteButton
+                                text="Logout"
+                                variant="outlined"
+                                onClick={handleAdminLogout}
+                                className="w-[150px] text-[var(--accent)] border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"  // Same width as above
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="w-full md:w-1/2 flex justify-center md:justify-end">

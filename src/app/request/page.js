@@ -9,6 +9,7 @@ export default function RequestPage (){
         height: '90vh',
       }
 
+
       // const options = {
       //   mapId: "3c5594bda824c5c5"
 
@@ -79,10 +80,11 @@ export default function RequestPage (){
         setDirectionsRenderer(new routesLibrary.DirectionsRenderer({map}));
       }, [routesLibrary, map]);
       useEffect (() => {
+        const sourceAddress = localStorage.getItem("shopAddress");
         if(!directionservice || !directionsRenderer) return;
         directionservice.route(
           {
-            origin: "Sultan Shawarma Dha",
+            origin: sourceAddress,
             destination: "Lahore University of Management Sciences, Lahore",
             travelMode: google.maps.TravelMode.DRIVING,
             provideRouteAlternatives: true,

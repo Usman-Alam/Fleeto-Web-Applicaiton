@@ -1,17 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import SiteButton from "@components/SiteButton";
-import { useRouter } from "next/navigation";
 import shop_benefits from "@public/benefits.svg";
 
 export default function BecomeAPartner() {
-    const router = useRouter();
-
-    const handleJoinNowClick = () => {
-        router.push("/shop/signup");
-    };
-
     return (
         <section className="w-[var(--section-width)] max-w-[var(--section-max-width)] my-[80px] flex flex-col items-center">
             <h2 className="text-3xl font-bold mb-[48px] text-center">
@@ -57,14 +49,6 @@ export default function BecomeAPartner() {
                             </p>
                         </li>
                     </ul>
-
-                    <div className="mt-[16px]">
-                        <SiteButton
-                            text="Join Now as a Partner"
-                            variant="filled"
-                            onClick={handleJoinNowClick}
-                        />
-                    </div>
                 </div>
 
                 {/* Image side */}

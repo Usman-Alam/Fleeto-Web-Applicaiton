@@ -32,7 +32,6 @@ export default function RestaurantPage() {
 
   // Simulate fetching restaurant data
   useEffect(() => {
-    localStorage.setItem('shopname', 'Sultan Shawarma');
     // Replace this with an actual API call
     const fetchRestaurantData = async () => {
       const mockData: RestaurantData = {

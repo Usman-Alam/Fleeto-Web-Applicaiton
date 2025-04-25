@@ -10,7 +10,7 @@ export default function ShopLoginPage() {
     const router = useRouter();
     const { login, isAuthenticated } = useAuth();
     const [formData, setFormData] = useState({
-        email: "",
+        email: "", 
         password: "",
         remember: false,
     });
@@ -87,19 +87,22 @@ export default function ShopLoginPage() {
                 throw new Error(data.error || `Error: ${response.status}`);
             }
 
-            // Use the auth context login function
-            await login({
-                email: formData.email,
-                password: formData.password
-            });
+            // // Use the auth context login function
+            // await login({
+            //     email: formData.email,
+            //     password: formData.password
+            // });
+            localStorage.setItem('role', 'vendor')
+            localStorage.setItem('shopname', data.data.shopname);
+            localStorage.setItem('email', data.data.email);
 
-            // Redirect to shop dashboard
+            // Redirect to shop dashboard   
             router.push("/shop/dashboard");
         } catch (err) {
             console.error("Login error:", err);
             setError(err instanceof Error ? err.message : "An unexpected error occurred. Please try again.");
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); 
         }
     };
 
@@ -148,7 +151,7 @@ export default function ShopLoginPage() {
                     </div>
                 </div>
             }
-            buttonText={isSubmitting ? "Signing In..." : "Sign In"}
+            buttonText={isSubmitting ? "Logging In..." : "Log In"}
             onSubmit={handleSubmit}
             disabled={isSubmitting}
             error={error}
