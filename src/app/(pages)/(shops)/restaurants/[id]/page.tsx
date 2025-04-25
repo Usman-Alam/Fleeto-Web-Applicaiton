@@ -32,11 +32,12 @@ export default function RestaurantPage() {
 
   // Simulate fetching restaurant data
   useEffect(() => {
+    localStorage.setItem('shopname', 'Sultan Shawarma');
     // Replace this with an actual API call
     const fetchRestaurantData = async () => {
       const mockData: RestaurantData = {
         id,
-        name: "Zakir Tikka",
+        name: "Sultan Shawarma",
         description:
           "Pakistani BBQ restaurant serving sizzling tikka, kebabs, and karahi, known for its rich flavors and traditional charcoal-grilled taste.",
         image: "/shops/zakir.jpg",

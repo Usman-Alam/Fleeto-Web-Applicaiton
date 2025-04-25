@@ -43,7 +43,10 @@ export default function AdminLoginPage() {
       }
 
       // Successful login
-      await login(data.data);
+      // await login(data.data);
+      localStorage.setItem('role', data.data.role);
+      localStorage.setItem('name', data.data.username);
+      localStorage.setItem('email', data.data.email);
       router.push("/admin/dashboard");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Login failed. Please try again.");

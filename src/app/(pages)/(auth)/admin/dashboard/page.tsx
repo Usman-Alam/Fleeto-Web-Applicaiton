@@ -62,7 +62,7 @@ const initialFaqs = [
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const { user, isAuthenticated } = useAuth();
+    // const { user,   } = useAuth();
     const [shopRequests, setShopRequests] = useState(initialShopRequests);
     const [faqs, setFaqs] = useState(initialFaqs);
     const [expandedRequest, setExpandedRequest] = useState<string | null>(null);
@@ -70,14 +70,18 @@ export default function AdminDashboard() {
     const [newFaq, setNewFaq] = useState({ question: "", answer: "" });
     const [isLoading, setIsLoading] = useState(true);
 
+    const name = localStorage.getItem("name");
+    const email = localStorage.getItem("email");
+    const role = localStorage.getItem("role");
+
     // Move the authentication check to useEffect
     useEffect(() => {
-        if (!isLoading && (!isAuthenticated || user?.role !== "admin")) {
+        if (!isLoading && (role !== "admin")) {
             // Redirect to admin login if not authenticated as admin
             router.push("/admin/login");
         }
         setIsLoading(false);
-    }, [isAuthenticated, user, router, isLoading]);
+    }, [role, router, isLoading]);
 
     // Rest of your component functions
     const handleAddShopClick = () => {
@@ -159,7 +163,7 @@ export default function AdminDashboard() {
     }
 
     // If not authenticated (will redirect in useEffect), don't render the dashboard content
-    if (!isAuthenticated || user?.role !== "admin") {
+    if (role !== "admin") {
         return null;
     }
 

@@ -296,7 +296,7 @@ export default function OrderConfirmation() {
           <SiteButton
             text="Track My Order"
             variant="filled"
-            onClick={() => router.push(`/order-tracking?orderNumber=${orderDetails.orderNumber}`)}
+            onClick={() => router.push(`/trackOrder?orderNumber=${orderDetails.orderNumber}`)}
             fullWidth
           />
         </div>
