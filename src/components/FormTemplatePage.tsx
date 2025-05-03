@@ -3,14 +3,17 @@ import SiteButton from "@components/SiteButton";
 
 interface FormTemplateProps {
     title: string;
+    subtitle?: string;
     fields: {
-        label: string;
         type: string;
         name: string;
-        placeholder: string;
+        label: string;
         value: string;
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        placeholder?: string;
+        onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
         required?: boolean;
+        options?: { value: string; label: string }[];
+        customElement?: React.ReactNode;
     }[];
     showTerms?: boolean;
     termsValue?: boolean;
@@ -19,10 +22,13 @@ interface FormTemplateProps {
     onSubmit: (e: React.FormEvent) => void;
     error?: string | null;
     disabled?: boolean;
+    note?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export default function FormTemplatePage({
     title,
+    subtitle,
     fields,
     showTerms = false,
     termsValue = false,
@@ -31,6 +37,8 @@ export default function FormTemplatePage({
     onSubmit,
     error = null,
     disabled = false,
+    note,
+    children
 }: FormTemplateProps) {
     return (
         <div className="w-[var(--section-width)] flex flex-row justify-center items-center pt-[var(--page-top-padding)]">
@@ -40,6 +48,10 @@ export default function FormTemplatePage({
             >
                 <h3>{title}</h3>
 
+                {subtitle && (
+                    <p className="text-gray-600 text-center -mt-4">{subtitle}</p>
+                )}
+
                 <form onSubmit={onSubmit} className="flex flex-col lg:gap-[24px] md:gap-[20px] gap-[16px] w-full">
                     {/* Error Display - Moved inside form for better positioning */}
                     {error && (
@@ -47,7 +59,10 @@ export default function FormTemplatePage({
                             {error}
                         </div>
                     )}
-                    
+
+                    {/* Add children before fields */}
+                    {children && <div className="w-full">{children}</div>}
+
                     {fields.length > 5 ? (
                         <div className="flex flex-col md:gap-[20px] gap-[16px] w-full">
                             {/* First Two Fields */}
@@ -58,7 +73,7 @@ export default function FormTemplatePage({
 
                             {/* Middle Fields */}
                             {fields.slice(2, -2).map((field, index) => (
-                                <InputField key={index} {...field} />
+                                <InputField key={index + 2} {...field} />
                             ))}
 
                             {/* Last Two Fields */}
@@ -89,7 +104,7 @@ export default function FormTemplatePage({
                                 className="w-[18px] h-[18px] flex-shrink-0 accent-[var(--accent)] cursor-pointer"
                             />
                             <label htmlFor="terms" className="text-[14px]">
-                                I agree to Fleeto's{" "}
+                                I agree to Fleeto&apos;s{" "}
                                 <a href="/terms-and-conditions" className="text-[var(--accent)] font-medium">
                                     Terms & Conditions
                                 </a>{" "}
@@ -102,11 +117,14 @@ export default function FormTemplatePage({
                         </div>
                     )}
 
+                    {/* Optional note */}
+                    {note && <div className="w-full">{note}</div>}
+
                     {/* Submit Button */}
-                    <SiteButton 
-                        text={buttonText} 
-                        variant="filled" 
-                        type="submit" 
+                    <SiteButton
+                        text={buttonText}
+                        variant="filled"
+                        type="submit"
                         disabled={disabled}
                         fullWidth
                     />

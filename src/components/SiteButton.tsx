@@ -10,6 +10,7 @@ interface ButtonProps {
     fullWidth?: boolean;
     className?: string;
     disabled?: boolean;
+    icon?: React.ReactNode;
 }
 
 export default function SiteButton({
@@ -21,25 +22,25 @@ export default function SiteButton({
     fullWidth = false,
     className = "",
     disabled = false,
+    icon
 }: ButtonProps) {
-    const baseStyles =
-        "flex flex-row justify-center items-center p-[8px_12px] lg:p-[10px_16px] h-auto rounded-[8px] font-medium text-[20px] border border-[var(--accent)]";
+    const baseStyles = 
+        "flex flex-row justify-center items-center gap-2 p-[8px_12px] lg:p-[10px_16px] h-auto rounded-[8px] font-medium text-[20px] border transition-colors duration-200";
 
     const variantStyles = {
-        filled: "bg-[var(--accent)] text-[var(--white)]",
-        outlined: "text-[var(--accent)]",
+        filled: "bg-[var(--accent)] text-[var(--white)] border-[var(--accent)] hover:bg-transparent hover:text-[var(--accent)]",
+        outlined: "bg-transparent text-[var(--accent)] border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--white)]",
     };
 
     const widthStyle = fullWidth ? "w-full" : "w-auto";
-    const disabledClass = disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
+    const disabledClass = disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer";
+    
+    const combinedStyles = `${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`;
 
     if (href) {
         return (
-            <Link
-                href={href}
-                onClick={onClick as any}
-                className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
-            >
+            <Link href={href} className={combinedStyles} onClick={onClick as any}>
+                {icon && icon}
                 {text}
             </Link>
         );
@@ -47,11 +48,12 @@ export default function SiteButton({
 
     return (
         <button
-            className={`${baseStyles} ${variantStyles[variant]} ${widthStyle} ${disabledClass} ${className}`}
+            className={combinedStyles}
             onClick={onClick}
             type={type}
             disabled={disabled}
         >
+            {icon && icon}
             {text}
         </button>
     );

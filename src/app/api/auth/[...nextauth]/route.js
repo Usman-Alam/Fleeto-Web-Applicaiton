@@ -23,20 +23,14 @@ const authOptions = {
                 }
                 catch(err)
                 {
-                    console.log(err);
                     throw new Error("Database connection failed")
                 }
-                console.log("Trying to authorize", email);
                 if (!user) {
                     throw new Error("No user found with this email");
                 }
-                console.log("User found:", user.email);
-                console.log("Comparing passwords");
                 const passwordMatch = await bcrypt.compare(password, user.password);
-                console.log("Password match:", passwordMatch);
 
                 if (!passwordMatch) {
-                    console.log("Password mismatch");
                     throw new Error("Password is incorrect")
                 }
 

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
 import { CartProvider } from "@contexts/CartContext";
-import Navbar from "@components/NavBar";
+import Navbar from "@components/NavBar/NavBar";
 import SessionProvider from "@providers/SessionProvider";
 import { AuthProvider } from "@contexts/AuthContext";
+import Footer from "@components/Footer";
+import ProtectedRoute from "@/components/ProtectedRoutes";
 
 // For variable font
 const inter = localFont({
@@ -21,17 +23,20 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className={`${inter.variable} flex flex-col items-top justify-center pb-[80px]`}>
-        <SessionProvider>
-          <AuthProvider>
+      <body className={`${inter.variable} flex flex-col items-top justify-center`}>
+        {/* <SessionProvider>
+          <AuthProvider> */}
+          <ProtectedRoute>
             <CartProvider>
-              <div className="relative flex flex-col items-center justify-top w-full h-full max-w-[1440px] overflow-x-clip">
+              <div className="relative flex flex-col items-center justify-top w-full h-full overflow-x-clip">
                 <Navbar />
                 {children}
+                <Footer />
               </div>
             </CartProvider>
-          </AuthProvider>
-        </SessionProvider>
+            </ProtectedRoute>
+          {/* </AuthProvider>
+        </SessionProvider> */}
       </body>
     </html>
   );

@@ -138,6 +138,14 @@ h6 {
   h3 {
     font-size: 32px;
   }
+
+  h5 {
+    font-size: 22px;
+  }
+
+  h6 {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -150,9 +158,23 @@ h6 {
     font-size: 16px;
   }
 
-  h1,
-  h2,
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
   h3 {
     font-size: 28px;
+  }
+
+  h5 {
+    font-size: 20px;
+  }
+
+  h6 {
+    font-size: 18px;
   }
 }

@@ -11,7 +11,6 @@ export default async function connectLoginDB() {
     await mongoose.connect(uri, {
       dbName: "users", // 👈 YOUR DB NAME here (check in MongoDB Compass)
     });
-    console.log("✅ MongoDB connected to fleeto DB");
   } catch (err) {
     console.error("❌ MongoDB connection error:", err);
     throw err;
