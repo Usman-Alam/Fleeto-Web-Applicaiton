@@ -12,20 +12,20 @@ const Footer: React.FC = () => {
     const router = useRouter();
 
     // Function to handle FAQs link click
-    const handleFaqsClick = (e: React.MouseEvent) => {
-        e.preventDefault();
+    // const handleFaqsClick = (e: React.MouseEvent) => {
+    //     e.preventDefault();
 
-        if (pathname === "/") {
-            // If already on homepage, scroll to FAQs section
-            const faqsElement = document.getElementById("faqs");
-            if (faqsElement) {
-                faqsElement.scrollIntoView({ behavior: "smooth" });
-            }
-        } else {
-            // If on another page, navigate to homepage FAQs section
-            router.push("/#faqs");
-        }
-    };
+    //     if (pathname === "/") {
+    //         // If already on homepage, scroll to FAQs section
+    //         const faqsElement = document.getElementById("faqs");
+    //         if (faqsElement) {
+    //             faqsElement.scrollIntoView({ behavior: "smooth" });
+    //         }
+    //     } else {
+    //         // If on another page, navigate to homepage FAQs section
+    //         router.push("/#faqs");
+    //     }
+    // };
 
     return (
         <footer className="bg-[var(--bg2)] w-full mt-[var(--section-top-padding)] flex flex-col items-center justify-center">
