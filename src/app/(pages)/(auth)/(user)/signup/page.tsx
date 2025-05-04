@@ -19,9 +19,14 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
+  const handleChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    // const { name, value, type, checked } = e.target;
+    // const newValue = type === "checkbox" ? checked : value;
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+    const { name, value, type } = target;
+    const checked = type === "checkbox" ? (target as HTMLInputElement).checked : undefined;
+    const newValue = type === "checkbox" ? (target as HTMLInputElement).checked : value;
+
 
     // First name validation
     if (name === "firstname") {

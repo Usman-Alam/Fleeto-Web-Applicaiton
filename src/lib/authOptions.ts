@@ -1,8 +1,9 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";   
-import connectDB from "../../../../../server/server";
+// src/lib/authOptions.ts
+
+import CredentialsProvider from "next-auth/providers/credentials";
+import connectDB from "../../server/server";
 import bcrypt from "bcryptjs";
-import User from "../../../../models/user"; 
+import User from "../models/user";
 
 export const authOptions = {
     providers: [
@@ -13,26 +14,25 @@ export const authOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                const { email, password } = credentials
-
+                const { email, password } = credentials;
 
                 await connectDB();
-                try{
+                let user;
+                try {
+                    user = await User.findOne({ email });
+                } catch (err) {
+                    console.log(err);
+                    throw new Error("Database connection failed");
+                }
 
-                    var user = await User.findOne({ email });
-                }
-                catch(err)
-                {
-                    console.log(err)
-                    throw new Error("Database connection failed")
-                }
                 if (!user) {
                     throw new Error("No user found with this email");
                 }
+
                 const passwordMatch = await bcrypt.compare(password, user.password);
 
                 if (!passwordMatch) {
-                    throw new Error("Password is incorrect")
+                    throw new Error("Password is incorrect");
                 }
 
                 return user;
@@ -47,6 +47,3 @@ export const authOptions = {
         signIn: "/"
     },
 };
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };

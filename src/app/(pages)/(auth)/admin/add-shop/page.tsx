@@ -109,16 +109,24 @@ export default function AddShopPage() {
 
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof ShopFormData],
-          [child]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => {
+        const parentValue = prev[parent as keyof ShopFormData];
+    
+        // Ensure the parent value is an object (not null, not primitive)
+        if (typeof parentValue === "object" && parentValue !== null) {
+          return {
+            ...prev,
+            [parent]: {
+              ...(parentValue as Record<string, any>),
+              [child]: value,
+            },
+          };
+        }
+    
+        return prev; // fallback if not an object
+      });
     }
+    
   };
 
   const handleAddCuisine = () => {
@@ -155,14 +163,11 @@ export default function AddShopPage() {
         .replace(/^-+|-+$/g, '');
 
       // Create submission data with slug and password
-      const submissionData = {
+      const {confirmPassword , ...submissionData } = {
         ...formData,
         slug,
         password: formData.password // Include password
       };
-
-      // Remove confirmPassword from submission
-      delete submissionData.confirmPassword;
 
       const response = await fetch("/api/addShop", {
         method: "POST",

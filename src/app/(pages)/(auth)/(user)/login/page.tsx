@@ -42,8 +42,14 @@ export default function Login() {
       window.location.href = "/";
     } catch (err) {
       console.error("Error during login:", err);
-      setError(err.message || "Something went wrong. Please try again.");
-    } finally {
+    
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    }
+     finally {
       setIsLoading(false);
     }
   };
