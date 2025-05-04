@@ -9,13 +9,14 @@ import BecomeAPartnerSection from "@components/BecomeAPartnerSection";
 import SiteButton from "@components/SiteButton";
 
 interface SectionState {
-  data: any[];
+  data: { id: number; name: string; description?: string; price?: number }[];
   isLoading: boolean;
   error: string | null;
 }
 
+
 export default function Home() {
-  const router = useRouter(); // Add router initialization
+  useRouter(); // Add router initialization
 
   // Separate loading states for each section
   const [sections, setSections] = useState<{

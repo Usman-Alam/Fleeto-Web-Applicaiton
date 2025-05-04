@@ -3,8 +3,6 @@ import localFont from 'next/font/local';
 import "./globals.css";
 import { CartProvider } from "@contexts/CartContext";
 import Navbar from "@components/NavBar/NavBar";
-import SessionProvider from "@providers/SessionProvider";
-import { AuthProvider } from "@contexts/AuthContext";
 import Footer from "@components/Footer";
 import ProtectedRoute from "@/components/ProtectedRoutes";
 

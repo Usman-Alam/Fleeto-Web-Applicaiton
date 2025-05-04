@@ -1,22 +1,9 @@
 "use client";
 
-import React, { use } from 'react';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import{useMapsLibrary, Map, APIProvider, useMap} from "@vis.gl/react-google-maps";
 export default function RequestPage (){
-    const containerStyle = {
-        width: '100%',
-        height: '90vh',
-      }
-
-
-
-      const center = {
-        lat: 31.470560140195342,
-        lng: 74.41088976026865,
-      };
-      
-
       return (
         <div style={{ height: '90vh', width: '100%' }}>
         <APIProvider apiKey="AIzaSyA7uTDYEbG1tCIAdIonbbFLv1c81mMZ-Uo">
