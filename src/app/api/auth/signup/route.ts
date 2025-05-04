@@ -1,4 +1,3 @@
-import User from "@models/user";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../server/server";
@@ -49,6 +48,7 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
     
 
     const savedOTP = await newOTPVerify.save();
+    console.log(savedOTP)
 
     await transporter.sendMail(mailOptions);
 

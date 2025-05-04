@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import connectDB from "../../../../../../server/server";
 import Shop from "@/models/shop";
 
