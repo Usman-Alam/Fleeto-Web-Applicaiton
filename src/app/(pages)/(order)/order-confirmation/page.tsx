@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import SiteButton from "@components/SiteButton";
 import { useCart } from "@contexts/CartContext";
-import { useAuth } from "@contexts/AuthContext";
 import { Coins } from "lucide-react";
 
 export interface OrderDetails {

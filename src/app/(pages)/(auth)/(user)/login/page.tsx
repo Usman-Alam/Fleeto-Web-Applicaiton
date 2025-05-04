@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import FormTemplatePage from "@components/FormTemplatePage";
-import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState('');

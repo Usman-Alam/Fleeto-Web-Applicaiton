@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@contexts/CartContext";
-import { useAuth } from "@contexts/AuthContext";
 import OrderSummary from "@components/Checkout/OrderSummary";
 import FleetoCoinsSection from "@components/Checkout/FleetoCoinsSection";
 import DeliveryMethod from "@components/Checkout/DeliveryMethod";
