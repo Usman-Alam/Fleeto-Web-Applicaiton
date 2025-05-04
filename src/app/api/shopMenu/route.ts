@@ -42,7 +42,7 @@ export async function GET(req: Request) {
                 ? shop.deliveryFee === 0 ? "Free" : `$${shop.deliveryFee.toFixed(2)}`
                 : 'Delivery fee not specified',
             totalRatings: shop.totalRatings || 0,
-            menu: shop.menu?.map((item: any, index: number) => ({
+            menu: shop.menu?.map((item: { dishname: string; dishdescription: string; dishprice: number }, index: number) => ({
                 id: index + 1,
                 name: item.dishname,
                 description: item.dishdescription,

@@ -33,8 +33,8 @@ export async function updateShopRating(shopName: string, category: string) {
     
 
     // Use updateOne for more precise update
-    const result = await Shop.updateOne(
-      { _id: shop._id }, // Use _id for exact match
+    await Shop.updateOne(
+      { _id: shop._id },
       { 
         $set: { 
           rating: roundedRating,
@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Rating update error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to update rating" },
+      { error: error instanceof Error ? error.message : "Failed to update rating" },
       { status: 500 }
     );
   }

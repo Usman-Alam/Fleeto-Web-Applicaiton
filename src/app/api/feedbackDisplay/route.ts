@@ -4,6 +4,7 @@ import connectDB from '../../../../server/server';
 
 export async function GET(req: Request) {
   try {
+    console.log(req)
     await connectDB();
 
     // Get all feedbacks, sorted by most recent first

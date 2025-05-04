@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../server/server";
 import Feedback from "@/models/feedback";
 import { updateShopRating } from "../../api/ratingService/route";
+import { ValidationError } from "mongoose"; // Assuming ValidationError is from mongoose
 
 export async function POST(req: Request) {
   try {
@@ -39,14 +40,16 @@ export async function POST(req: Request) {
       { message: "Feedback submitted successfully", data: feedback },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error submitting feedback:", error);
     
-    if (error.name === 'ValidationError') {
+    if (error instanceof Error && error.name === 'ValidationError') {
       return NextResponse.json(
         { 
           error: "Validation error", 
-          details: Object.values(error.errors).map((err: any) => err.message)
+          details: error instanceof ValidationError
+            ? Object.values((error as ValidationError).errors).map((err) => (err as { message: string }).message)
+            : ["Unknown validation error"]
         },
         { status: 400 }
       );

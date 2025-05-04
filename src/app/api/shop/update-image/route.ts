@@ -72,10 +72,13 @@ export async function POST(req: Request) {
             imageUrl
         });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error updating shop image:", error);
+    
+        const errorMessage = error instanceof Error ? error.message : "Failed to update shop image";
+    
         return NextResponse.json(
-            { error: error.message || "Failed to update shop image" },
+            { error: errorMessage },
             { status: 500 }
         );
     }

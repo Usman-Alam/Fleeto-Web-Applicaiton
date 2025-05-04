@@ -4,7 +4,6 @@ import Session from "@models/session";
 import User from "@models/user";
 import UserOTPVerify from "@models/userOTPVerification";
 import bcrypt from "bcryptjs";
-import { Types } from "mongoose";
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
     
     if (!otpRecord) {
       // Try to find any records to debug
-      const allRecords = await UserOTPVerify.find({});
+      await UserOTPVerify.find({});
       
       return NextResponse.json({ 
         error: "Verification failed - No OTP found for this email" 

@@ -58,12 +58,12 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Admin signup error:", error);
     
     // Handle mongoose validation errors
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+    if (error instanceof Error && (error as any).name === 'ValidationError') {
+      const validationErrors = Object.values((error as any).errors).map((err: unknown) => (err as { message: string }).message);
       return NextResponse.json(
         { error: validationErrors.join(', ') },
         { status: 400 }

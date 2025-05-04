@@ -51,11 +51,13 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating shop:", error);
 
-    if (error.name === 'ValidationError') {
-      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+    if (error instanceof Error && error.name === 'ValidationError') {
+      const validationErrors = error instanceof Error && 'errors' in error
+        ? Object.values((error as any).errors).map((err) => (err as { message: string }).message)
+        : ["Unknown validation error"];
       return NextResponse.json(
         { error: validationErrors.join(', ') },
         { status: 400 }
