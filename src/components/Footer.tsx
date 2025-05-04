@@ -2,14 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+// import { usePathname, useRouter } from 'next/navigation';
 import { MapPin, Phone, Mail, Instagram, Twitter, Facebook } from 'lucide-react';
 import Logo from './Logo';
 
 const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
-    const pathname = usePathname();
-    const router = useRouter();
+    // const pathname = usePathname();
+    // const router = useRouter();
 
     // Function to handle FAQs link click
     // const handleFaqsClick = (e: React.MouseEvent) => {
