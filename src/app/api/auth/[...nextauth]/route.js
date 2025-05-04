@@ -4,7 +4,7 @@ import connectDB from "../../../../../server/server";
 import bcrypt from "bcryptjs";
 import User from "../../../../models/user"; 
 
-const authOptions = {
+export const authOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -23,6 +23,7 @@ const authOptions = {
                 }
                 catch(err)
                 {
+                    console.log(err)
                     throw new Error("Database connection failed")
                 }
                 if (!user) {
