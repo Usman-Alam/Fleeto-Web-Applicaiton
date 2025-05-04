@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function VerifyPage() {
@@ -46,6 +46,7 @@ export default function VerifyPage() {
         setError(data.error || 'Verification failed');
       }
     } catch (err) {
+      console.error(err)
       setError('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -87,7 +88,7 @@ export default function VerifyPage() {
         </form>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
-          Didn't receive the code? <button 
+          Did not receive the code? <button 
             onClick={async () => {
               try {
                 const response = await fetch('/api/auth/resend-otp', {
@@ -103,6 +104,7 @@ export default function VerifyPage() {
                   throw new Error('Failed to resend OTP');
                 }
               } catch (err) {
+                console.error(err)
                 setError('Failed to resend OTP');
               }
             }}

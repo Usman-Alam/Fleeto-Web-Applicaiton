@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@contexts/CartContext";
 import { useAuth } from "@contexts/AuthContext";
@@ -18,9 +18,8 @@ type PaymentMethod = "card" | "cash";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cartItems, updateQuantity, clearCart } = useCart();
-  const { user } = useAuth();
-
+  const { cartItems, updateQuantity, clearCart } = useCart();  
+  console.log(clearCart)
   // States
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("standard");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
@@ -193,6 +192,7 @@ export default function CheckoutPage() {
         router.push(`/order-confirmation?orderDetails=${encodedOrderDetails}`);
       }
     } catch (error) {
+      console.log(error);
       setErrors({ submit: "Failed to place order. Please try again." });
     } finally {
       setIsPlacingOrder(false);

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteButton from "@components/SiteButton";
-import { Store, Phone, Mail, Clock, Truck, Star, Lock } from "lucide-react";
+import { Store, Phone, Truck, Lock } from "lucide-react";
 
 interface ShopFormData {
   name: string;

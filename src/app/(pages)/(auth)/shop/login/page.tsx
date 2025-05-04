@@ -16,6 +16,7 @@ export default function ShopLoginPage() {
     });
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    console.log(login)
 
     // Redirect if already authenticated
     useEffect(() => {

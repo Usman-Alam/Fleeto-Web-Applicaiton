@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import SiteButton from "@components/SiteButton";
-import { useAuth } from "@contexts/AuthContext";
 import admin_hero from "@public/admin_hero.png";
 
 // Sample shop requests data - using generic terminology
@@ -70,8 +69,6 @@ export default function AdminDashboard() {
     const [newFaq, setNewFaq] = useState({ question: "", answer: "" });
     const [isLoading, setIsLoading] = useState(true);
 
-    const name = localStorage.getItem("name");
-    const email = localStorage.getItem("email");
     const role = localStorage.getItem("role");
 
     // Move the authentication check to useEffect

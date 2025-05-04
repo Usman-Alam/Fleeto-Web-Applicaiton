@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Check, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import SiteButton from '@components/SiteButton';
 import { useRouter } from 'next/navigation';
 
@@ -20,9 +20,9 @@ export default function OrderTrackingPage() {
         return 0;
     });
 
-    var maxTime: number = Number(localStorage.getItem('maxDeliveryTime'))
-    var prepareTime = maxTime / 2
-    var inTransitTime = maxTime / 2
+    const maxTime: number = Number(localStorage.getItem('maxDeliveryTime'))
+    const prepareTime = maxTime / 2
+    const inTransitTime = maxTime / 2
 
     useEffect(() => {
         let timer1: NodeJS.Timeout;

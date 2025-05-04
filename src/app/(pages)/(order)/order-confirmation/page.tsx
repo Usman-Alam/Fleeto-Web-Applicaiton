@@ -36,7 +36,6 @@ export default function OrderConfirmation() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
-  const { user, updateUser } = useAuth();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [coinsUpdated, setCoinsUpdated] = useState(false);
 

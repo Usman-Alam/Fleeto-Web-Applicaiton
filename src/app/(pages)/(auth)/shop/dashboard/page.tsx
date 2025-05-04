@@ -4,18 +4,17 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaPlus, FaMinus } from "react-icons/fa";
 
-type MenuItem = {
-    dishname: string;
-    dishdescription: string;
-    dishprice: number;
-};
+// type MenuItem = {
+//     dishname: string;
+//     dishdescription: string;
+//     dishprice: number;
+// };
 
 export default function ShopDashboard() {
     const router = useRouter();
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
     const [shopName, setShopName] = useState("");
 
     // Form states

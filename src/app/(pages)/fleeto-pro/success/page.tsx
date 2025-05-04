@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Crown, Check } from "lucide-react";
 import SiteButton from "@components/SiteButton";

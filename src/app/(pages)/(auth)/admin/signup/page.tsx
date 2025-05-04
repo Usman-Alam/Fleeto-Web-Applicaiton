@@ -7,7 +7,6 @@ import { useAuth } from "@contexts/AuthContext";
 
 export default function AdminSignupPage() {
   const router = useRouter();
-  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",

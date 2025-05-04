@@ -27,6 +27,7 @@ export default function ChatbotPage() {
       const botMessage = { role: "gordon", text: data.message };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
+      console.log(error)
       const errorMessage = {
         role: "gordon",
         text: "Something went wrong, you donut!",

@@ -21,6 +21,7 @@ export default function PaymentPage() {
       try {
         const response = await fetch('http://localhost:4173/test');
         const data = await response.json();
+        console.log(data)
         setTestSuccess(true);
       } catch (error) {
         console.error('Server test failed:', error);

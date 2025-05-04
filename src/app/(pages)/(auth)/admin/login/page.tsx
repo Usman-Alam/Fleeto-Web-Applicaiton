@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FormTemplatePage from "@components/FormTemplatePage";
-import { useAuth } from "@contexts/AuthContext";
 
 export default function AdminLoginPage() {
   const router = useRouter();
