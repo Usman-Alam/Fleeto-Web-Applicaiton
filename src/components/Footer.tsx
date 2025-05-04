@@ -57,13 +57,9 @@ const Footer: React.FC = () => {
                         <h5 className="font-semibold mb-4">Useful Links</h5>
                         <ul className="flex flex-col gap-2">
                             <li>
-                                <a
-                                    href="/#faqs"
-                                    className="text-[var(--body)] hover:text-[var(--accent)]"
-                                    onClick={handleFaqsClick}
-                                >
-                                    FAQs
-                                </a>
+                            <Link href="/#faqs" className="text-[var(--body)] hover:text-[var(--accent)]" scroll={false}>
+                                FAQs
+                            </Link>
                             </li>
                             <li>
                                 <Link href="/shop/signup" className="text-[var(--body)] hover:text-[var(--accent)]">

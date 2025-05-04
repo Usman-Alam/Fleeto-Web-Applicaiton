@@ -50,7 +50,7 @@ export default function FleetoCoinsSection({
                 )}
                 {projectedCoinsToEarn > 0 && (
                     <p className="text-sm text-green-600">
-                        You'll earn {projectedCoinsToEarn} coins from this order
+                        You will earn {projectedCoinsToEarn} coins from this order
                     </p>
                 )}
             </div>

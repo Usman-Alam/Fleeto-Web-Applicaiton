@@ -4,7 +4,6 @@ import Image from "next/image";
 import SiteButton from "@components/SiteButton";
 import hero_image from "@public/hero_image.png";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@contexts/AuthContext";
 
 export default function HomeHero() {
     const router = useRouter();

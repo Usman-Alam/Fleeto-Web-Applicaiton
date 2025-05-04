@@ -39,7 +39,7 @@ export default function SiteButton({
 
     if (href) {
         return (
-            <Link href={href} className={combinedStyles} onClick={onClick as any}>
+            <Link href={href} className={combinedStyles} onClick={onClick}>
                 {icon && icon}
                 {text}
             </Link>

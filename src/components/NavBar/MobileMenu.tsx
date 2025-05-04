@@ -18,6 +18,7 @@ interface MobileMenuProps {
 
 const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(
     function MobileMenu({ isOpen, setIsOpen, user, isAuthenticated, logout, router }, ref) {
+        console.log(isOpen)
         const handleLogin = () => {
             setIsOpen(false);
             router.push("/login");

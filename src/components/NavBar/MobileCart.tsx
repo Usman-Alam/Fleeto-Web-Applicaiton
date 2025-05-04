@@ -15,6 +15,7 @@ interface MobileCartProps {
 
 const MobileCart = forwardRef<HTMLDivElement, MobileCartProps>(
     function MobileCart({ isOpen, setIsOpen, pathname, router }, ref) {
+        console.log(isOpen)
         const { cartItems, updateQuantity } = useCart();
 
         const totalPrice = cartItems.reduce(

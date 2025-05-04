@@ -144,27 +144,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [session]);
 
   // Fetch user data function
-  const fetchUserData = async () => {
-    try {
-      const response = await fetch("/api/user/profile");
-      const data = await response.json();
+  // const fetchUserData = async () => {
+  //   try {
+  //     const response = await fetch("/api/user/profile");
+  //     const data = await response.json();
 
-      if (response.ok) {
-        // Make sure all fields from the API are being passed to setState
-        setUser({
-          id: data.id,
-          username: data.username,
-          email: data.email, // Ensure this is included!
-          isPro: data.isPro,
-          proExpiryDate: data.proExpiryDate,
-          fleetoCoins: data.fleetoCoins,
-          // ...other properties
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-    }
-  };
+  //     if (response.ok) {
+  //       // Make sure all fields from the API are being passed to setState
+  //       setUser({
+  //         id: data.id,
+  //         username: data.username,
+  //         email: data.email, // Ensure this is included!
+  //         isPro: data.isPro,
+  //         proExpiryDate: data.proExpiryDate,
+  //         fleetoCoins: data.fleetoCoins,
+  //         // ...other properties
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch user data:", error);
+  //   }
+  // };
 
   // Login function
   const login = async (credentials: LoginCredentials) => {
