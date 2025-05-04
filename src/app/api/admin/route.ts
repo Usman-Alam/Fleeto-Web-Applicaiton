@@ -62,8 +62,8 @@ export async function POST(req: Request) {
     console.error("Admin signup error:", error);
     
     // Handle mongoose validation errors
-    if (error instanceof Error && (error as any).name === 'ValidationError') {
-      const validationErrors = Object.values((error as any).errors).map((err: unknown) => (err as { message: string }).message);
+    if (error instanceof Error && 'name' in error && error.name === 'ValidationError') {
+      const validationErrors = Object.values(((error as unknown) as { errors: Record<string, { message: string }> }).errors).map((err) => err.message);
       return NextResponse.json(
         { error: validationErrors.join(', ') },
         { status: 400 }

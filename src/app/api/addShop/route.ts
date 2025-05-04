@@ -56,7 +56,7 @@ export async function POST(req: Request) {
 
     if (error instanceof Error && error.name === 'ValidationError') {
       const validationErrors = error instanceof Error && 'errors' in error
-        ? Object.values((error as any).errors).map((err) => (err as { message: string }).message)
+        ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
         : ["Unknown validation error"];
       return NextResponse.json(
         { error: validationErrors.join(', ') },
