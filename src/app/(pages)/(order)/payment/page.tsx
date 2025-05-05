@@ -19,7 +19,7 @@ export default function PaymentPage() {
   useEffect(() => {
     const testServer = async () => {
       try {
-        const response = await fetch('http://localhost:4173/test');
+        const response = await fetch('fleetoserver-production.up.railway.app/test');
         const data = await response.json();
         console.log(data)
         setTestSuccess(true);
@@ -74,7 +74,7 @@ export default function PaymentPage() {
         };
         
         
-        const response = await fetch('http://localhost:4173/payment', {
+        const response = await fetch('fleetoserver-production.up.railway.app/payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
