@@ -16,8 +16,8 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
       port: 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: 'khuzaima1019@gmail.com',
+        pass: 'uexw uopj gkrs lqao'
       },
       debug: true // Add this for more detailed error logging
     });
