@@ -13,8 +13,8 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
   try {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false,
       auth: {
         user: 'khuzaima1019@gmail.com',
         pass: 'uexw uopj gkrs lqao'
