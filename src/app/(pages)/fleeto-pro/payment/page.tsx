@@ -18,7 +18,7 @@ export default function FleetoProPaymentPage() {
     useEffect(() => {
         const testServer = async () => {
             try {
-                const response = await fetch('http://localhost:4173/test');
+                const response = await fetch('fleetoserver-production.up.railway.app/test');
                 const data = await response.json();
                 console.log(data)
                 setTestSuccess(true);
@@ -50,7 +50,7 @@ export default function FleetoProPaymentPage() {
                 }
 
                 // Use more flexible field access with fallbacks
-                const response = await fetch("http://localhost:4173/fleeto-pro-subscription", {
+                const response = await fetch("fleetoserver-production.up.railway.app/fleeto-pro-subscription", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
