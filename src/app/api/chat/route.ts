@@ -5,7 +5,7 @@ const openai = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   apiKey: "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", // 🔒 Use env vars instead of hardcoding
   defaultHeaders: {
-    'HTTP-Referer': 'http://localhost:3000',
+    'HTTP-Referer': 'https://fleeto-eight.vercel.app/',
     'X-Title': 'Gordon-Ramsay-FoodBot',
   },
 });
@@ -40,8 +40,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Error generating response' }, { status: 500 });
   }
 }
-
-
-
-
-
