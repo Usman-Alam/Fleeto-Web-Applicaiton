@@ -28,7 +28,7 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
 
     // mail options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: "khuzaima1019@gmail.com",
       to: email,
       subject: "Verify your email",
       html: `<p>Enter <b>${otp}</b> in the app to verify your email address and complete your registration</p><p>This code <b>expires in 5 minutes</b>.</p>`
