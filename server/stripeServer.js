@@ -6,7 +6,7 @@ const app = express();
 
 // Enable CORS for your Next.js app
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://fleeto-eight.vercel.app/',
     methods: ['GET', 'POST'],
     credentials: true
 }));
@@ -41,7 +41,7 @@ app.post('/payment', async (req, res) => {
                     name: item.name || 'Product',
                     // Only include images if they exist and have a valid URL
                     ...(item.image && (item.image.startsWith('http') || item.image.startsWith('/'))
-                        ? { images: [item.image.startsWith('/') ? `http://localhost:3000${item.image}` : item.image] }
+                        ? { images: [item.image.startsWith('/') ? `https://fleeto-eight.vercel.app/${item.image}` : item.image] }
                         : {}),
                     description: `Quantity: ${item.quantity}`
                 },
@@ -84,8 +84,8 @@ app.post('/payment', async (req, res) => {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `http://localhost:3000/order-confirmation?amount=${total}&orderDetails=${encodeURIComponent(JSON.stringify(orderDetails))}`,
-            cancel_url: 'http://localhost:3000/checkout',
+            success_url: `https://fleeto-eight.vercel.app//order-confirmation?amount=${total}&orderDetails=${encodeURIComponent(JSON.stringify(orderDetails))}`,
+            cancel_url: 'https://fleeto-eight.vercel.app//checkout',
             customer_email: email,
         });
 
@@ -130,8 +130,8 @@ app.post('/fleeto-pro-subscription', async (req, res) => {
             ],
             mode: 'payment',
             // Use email as the key identifier in the success URL
-            success_url: `http://localhost:3000/fleeto-pro/success?userEmail=${encodeURIComponent(userEmail)}&timestamp=${Date.now()}`,
-            cancel_url: `http://localhost:3000/fleeto-pro?canceled=true`,
+            success_url: `https://fleeto-eight.vercel.app//fleeto-pro/success?userEmail=${encodeURIComponent(userEmail)}&timestamp=${Date.now()}`,
+            cancel_url: `https://fleeto-eight.vercel.app//fleeto-pro?canceled=true`,
             metadata: {
                 userId: userId,
                 userEmail: userEmail,
