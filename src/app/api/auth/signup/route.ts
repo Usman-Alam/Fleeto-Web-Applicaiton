@@ -17,7 +17,7 @@ async function sendOTPVerificationEmail(_id: string, email: string) {
       secure: false,
       auth: {
         user: 'khuzaima1019@gmail.com',
-        pass: 'uexw uopj gkrs lqao'
+        pass: 'uexwuopjgkrslqao'
       },
       debug: true // Add this for more detailed error logging
     });
