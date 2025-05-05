@@ -8,7 +8,7 @@ import { Types } from "mongoose"; // Import Types for ObjectId
 import dotenv from "dotenv";
 dotenv.config();
 
-// Move the function definition before it's used
+
 async function sendOTPVerificationEmail(_id: string, email: string) {
   try {
     const transporter = nodemailer.createTransport({
