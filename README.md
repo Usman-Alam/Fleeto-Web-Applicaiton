@@ -1,10 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Fleeto – Web Application
 
-## Getting Started
+Fleeto is a web-based platform designed to bring all nearby eateries, grocery stores, and pharmacies together on a single platform. The application provides users with a seamless way to explore, order, and manage deliveries while offering vendors tools to scale their services.
 
-First, run the development server:
+Key features include:
 
-```bash
+Delivery Tracking – Real-time order and delivery status updates.
+
+Subscription Model – Flexible subscription options for frequent users.
+
+Chat Assistant – In-app assistant to help users with queries and navigation.
+
+Vendor Dashboard – Management tools for vendors to track orders, manage inventory, and view sales reports.
+
+🚀 Getting Started
+Run the Development Server
 npm run dev
 # or
 yarn dev
@@ -12,25 +21,47 @@ yarn dev
 pnpm dev
 # or
 bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open http://localhost:3000
+ in your browser to view the application.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+File Structure
 
-## Learn More
+app/page.tsx – Main entry point for the homepage.
 
-To learn more about Next.js, take a look at the following resources:
+server/ – Contains backend services and APIs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+components/ – Reusable UI components.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+📖 Tech Stack
 
-## Deploy on Vercel
+Frontend: Next.js (React, TypeScript)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Backend: Node.js, Express
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Database: MongoDB
+
+Payments: Stripe Integration
+
+Styling: Tailwind CSS
+
+📂 Learn More
+
+Next.js Documentation
+ – Official Next.js docs
+
+Learn Next.js
+ – Interactive tutorial
+
+🚢 Deployment
+
+The application can be easily deployed on Vercel, the creators of Next.js.
+
+Deployment Guide: Next.js Deployment Docs
+
+👥 Contributors
+
+Choudhary Usman Alam  – Developer
+
+Team Members : Muhammad , Khuzaima bin gulzar , Muneed ur rehman , Safiullah Khalid
